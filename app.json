@@ -1,0 +1,9 @@
+{
+  "ios": {
+    "supportsTablet": true,
+    "bundleIdentifier": "com.example.Mapple",
+    "config": {
+      "googleMapsApiKey": "AIzaSyDkFVLOa9p3e2w3fzn1MfEBJxeUbYcz6hQ"
+    }
+  }
+}
