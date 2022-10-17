@@ -18,6 +18,8 @@ export default function App() {
           width: "100%",
           height: "100%",
         }}
+        showsUserLocation={true}
+        followsUserLocation={true}
       />
       <View
         style={{
