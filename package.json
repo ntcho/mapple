@@ -1,4 +1,10 @@
 {
+  "name": "mapple",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "npx expo start"
+  },
   "dependencies": {
     "expo": "^46.0.0",
     "react": "18.0.0",
