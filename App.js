@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import MapView from "react-native-maps";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 
 export default function App() {
   return (
@@ -11,6 +11,7 @@ export default function App() {
       }}
     >
       <MapView
+        provider={PROVIDER_GOOGLE}
         style={{
           width: "100%",
           height: "100%",
