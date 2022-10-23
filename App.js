@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, StyleSheet, TextInput } from "react-native";
+import { Text, View, StyleSheet, TextInput } from "react-native";
 import Constants from "expo-constants";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
