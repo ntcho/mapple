@@ -18,5 +18,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     paddingTop: Constants.statusBarHeight,
+    backgroundColor: "blue",
+    textAlign: "center",
   },
 });

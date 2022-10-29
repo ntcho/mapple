@@ -47,8 +47,8 @@ class MapContainer extends React.Component {
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
-        <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: "black" }}>
+        <View style={{ flex: 1, backgroundColor: "transparent" }}>
           <MapInput notifyChange={(loc) => this.getCoordsFromName(loc)} />
         </View>
 
