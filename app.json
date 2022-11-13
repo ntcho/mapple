@@ -5,5 +5,21 @@
     "config": {
       "googleMapsApiKey": "AIzaSyDkFVLOa9p3e2w3fzn1MfEBJxeUbYcz6hQ"
     }
-  }
+  },
+  "android": {
+    "package": "com.ynb.mapple"
+  },
+  "sourceExts": [
+    "expo.ts",
+    "expo.tsx",
+    "expo.js",
+    "expo.jsx",
+    "ts",
+    "tsx",
+    "js",
+    "jsx",
+    "json",
+    "wasm",
+    "svg"
+  ]
 }
