@@ -1,7 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import MapInput from "../Component/MapInput";
-import MyMapView from "../Component/MapView";
+import MapView from "../Components/MapView";
 import { getCurrentLocation } from "../Services/locationServices";
 
 class MapContainer extends React.Component {
@@ -71,9 +70,9 @@ class MapContainer extends React.Component {
         </View> */}
 
         <View style={{ flex: 1 }}>
-          <MyMapView
+          <MapView
             region={this.state.mapRegion}
-            onRegionChange={(newRegion) => this.onMapRegionChange(newRegion)}
+            // onRegionChange={(newRegion) => this.onMapRegionChange(newRegion)}
           />
         </View>
       </View>

@@ -1,5 +1,5 @@
 import React from "react";
-import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
 const MyMapView = (props) => {
   return (
@@ -8,7 +8,9 @@ const MyMapView = (props) => {
       style={{ flex: 1 }}
       region={props.region}
       showsUserLocation={true}
-      onRegionChange={(newRegion) => props.onRegionChange(newRegion)}
+      onRegionChange={
+        props.onRegionChange && ((newRegion) => props.onRegionChange(newRegion))
+      }
       followsUserLocation={true}
     >
       <Marker coordinate={props.region} />
