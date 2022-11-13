@@ -8,7 +8,7 @@ const MyMapView = (props) => {
       style={{ flex: 1 }}
       region={props.region}
       showsUserLocation={true}
-      onRegionChange={(reg) => props.onRegionChange(reg)}
+      onRegionChange={(newRegion) => props.onRegionChange(newRegion)}
       followsUserLocation={true}
     >
       <Marker coordinate={props.region} />
