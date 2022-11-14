@@ -107,9 +107,9 @@ export const MapContainer = () => {
         places={recommendations}
         onCardLeftScreen={(placeId) => {
           try {
-            let dismissedPlaceIndex = recommendations.findIndex(
-              (place) => place.place_id === placeId
-            );
+            let dismissedPlaceIndex =
+              recommendations &&
+              recommendations.findIndex((place) => place.place_id === placeId);
             setNewMapRegionWithPlace(recommendations[dismissedPlaceIndex + 1]);
           } catch (e) {
             console.error(e);

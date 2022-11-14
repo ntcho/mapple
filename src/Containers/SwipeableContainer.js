@@ -5,11 +5,12 @@ import tw from "twrnc";
 import PlaceCard from "../Components/PlaceCard";
 
 export const SwipeableContainer = ({
-  placeIds = [
-    "ChIJ52XMi3EK3YkR6GkZj5CDj0w",
-    "ChIJJbqitG0K3YkRIcwTnKYM8hU",
-    "ChIJq-TWk2wK3YkRl8LQeTgt_4E",
-  ],
+  placeIds = null,
+  // placeIds = [
+  //   "ChIJ52XMi3EK3YkR6GkZj5CDj0w",
+  //   "ChIJJbqitG0K3YkRIcwTnKYM8hU",
+  //   "ChIJq-TWk2wK3YkRl8LQeTgt_4E",
+  // ],
   places = null,
   onSwipe = null,
   onCardLeftScreen = null,
@@ -27,33 +28,34 @@ export const SwipeableContainer = ({
 
   return (
     <View style={tw`w-full h-84 p-4`}>
-      {places
-        ? places.slice(0, 9).map((place, index) => (
-            <TinderCard
-              key={place.place_id}
-              onSwipe={(dir) => onSwipe && onSwipe(dir, place.place_id)}
-              onCardLeftScreen={() =>
-                onCardLeftScreen && onCardLeftScreen(place.place_id)
-              }
-            >
-              <View style={tw`absolute h-52`}>
-                <PlaceCard placeId={place.place_id} />
-              </View>
-            </TinderCard>
-          ))
-        : placeIds.map((place_id, index) => (
-            <TinderCard
-              key={place_id}
-              onSwipe={(dir) => onSwipe && onSwipe(dir, place_id)}
-              onCardLeftScreen={() =>
-                onCardLeftScreen && onCardLeftScreen(place_id)
-              }
-            >
-              <View style={tw`absolute h-52`}>
-                <PlaceCard placeId={place_id} />
-              </View>
-            </TinderCard>
-          ))}
+      {places &&
+        places.slice(0, 9).map((place) => (
+          <TinderCard
+            key={place.place_id}
+            onSwipe={(dir) => onSwipe && onSwipe(dir, place.place_id)}
+            onCardLeftScreen={() =>
+              onCardLeftScreen && onCardLeftScreen(place.place_id)
+            }
+          >
+            <View style={tw`absolute h-52`}>
+              <PlaceCard placeId={place.place_id} />
+            </View>
+          </TinderCard>
+        ))}
+      {placeIds &&
+        placeIds.map((place_id) => (
+          <TinderCard
+            key={place_id}
+            onSwipe={(dir) => onSwipe && onSwipe(dir, place_id)}
+            onCardLeftScreen={() =>
+              onCardLeftScreen && onCardLeftScreen(place_id)
+            }
+          >
+            <View style={tw`absolute h-52`}>
+              <PlaceCard placeId={place_id} />
+            </View>
+          </TinderCard>
+        ))}
     </View>
   );
 };

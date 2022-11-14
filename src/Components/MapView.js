@@ -19,8 +19,8 @@ const MyMapView = ({
   if (map.current != null && region != null) {
     let newCenter = {
       latitude: isCardsVisible
-        ? region.latitude
-        : region.latitude + region.latitudeDelta * -0.2,
+        ? region.latitude + region.latitudeDelta * -0.1
+        : region.latitude,
       longitude: region.longitude,
     };
 
@@ -56,7 +56,7 @@ const MyMapView = ({
               ...initialRegion,
               // move the map 10% downwards so the marker is visible with the cards
               latitude:
-                initialRegion.latitude + initialRegion.latitudeDelta * -0.2,
+                initialRegion.latitude + initialRegion.latitudeDelta * -0.1,
             }
           : initialRegion
       }
