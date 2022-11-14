@@ -9,7 +9,6 @@ import HomeContainer from "./Containers/HomeContainer";
 import SurveyContainer from "./Containers/SurveyContainer";
 
 import { LogBox } from "react-native";
-import { clearAll } from "./Containers/ProfileContainer";
 
 // LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notification
@@ -61,7 +60,7 @@ export default function App() {
         <UserContext.Provider value={value}>
           <NavigationContainer>
             <Stack.Navigator
-              initialRouteName="Me"
+              initialRouteName="Survey"
               screenOptions={{ headerShown: false }}
             >
               <Stack.Screen name="Home" component={HomeContainer} />

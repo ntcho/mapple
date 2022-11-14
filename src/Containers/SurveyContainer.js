@@ -2,20 +2,20 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import tw from "twrnc";
+import { clearAll } from "./ProfileContainer";
 
 const Stack = createNativeStackNavigator();
 
 export const Survey1 = ({ navigation }) => {
+  clearAll();
+
   return (
     <View style={tw`flex items-center justify-center w-full h-full p-8 `}>
-      <Text style={tw`text-3xl m-4 font-extrabold text-center`}>
-        Question 1:
+      <Text style={tw`text-2xl font-bold text-center`}>
+        How are you traveling today?
       </Text>
-      <Text style={tw`text-xl  font-bold text-center`}>
-        How are you traveling now ?
-      </Text>
-      <Text style={tw`text-base m-4  font-semibold text-center`}>
-        Your mode of transportation for today. Chooose all options that apply.
+      <Text style={tw`text-base mt-2 mb-4 font-semibold text-center`}>
+        Choose your mode of transportation for today.
       </Text>
       <View style={tw`flex flex-row`}>
         <View style={tw`flex`}>
@@ -84,15 +84,11 @@ export const Survey2 = ({ route, navigation }) => {
 
   return (
     <View style={tw`flex items-center justify-center w-full h-full p-8 `}>
-      <Text style={tw`text-3xl m-4 font-extrabold text-center`}>
-        Question 2:
-      </Text>
-      <Text style={tw`text-xl  font-bold text-center`}>
+      <Text style={tw`text-2xl font-bold text-center`}>
         Who are you traveling with?
       </Text>
-      <Text style={tw`text-base m-4  font-semibold text-center`}>
-        Size of the group you are traveling with. Chooose all options that
-        apply.
+      <Text style={tw`text-base mt-2 mb-4 font-semibold text-center`}>
+        Choose the size of the group you are traveling with.
       </Text>
       <View style={tw`flex flex-row`}>
         <View style={tw`flex`}>
@@ -165,14 +161,11 @@ export const Survey3 = ({ route, navigation }) => {
 
   return (
     <View style={tw`flex items-center justify-center w-full h-full p-8 `}>
-      <Text style={tw`text-3xl m-4 font-extrabold text-center`}>
-        Question 3:
+      <Text style={tw`text-2xl font-bold text-center`}>
+        How active do you want to be?
       </Text>
-      <Text style={tw`text-xl  font-bold text-center`}>
-        How active will you be?
-      </Text>
-      <Text style={tw`text-base m-4  font-semibold text-center`}>
-        Level of activity for your travel. Chooose all options that apply.
+      <Text style={tw`text-base mt-2 mb-4 font-semibold text-center`}>
+        Choose the level of activity for your travel.
       </Text>
       <View style={tw`flex flex-row`}>
         <View style={tw`flex`}>
@@ -248,14 +241,11 @@ export const Survey4 = ({ route, navigation }) => {
 
   return (
     <View style={tw`flex items-center justify-center w-full h-full p-8 `}>
-      <Text style={tw`text-3xl m-4 font-extrabold text-center`}>
-        Question 4:
+      <Text style={tw`text-2xl font-bold text-center`}>
+        How much are you willing to spend?
       </Text>
-      <Text style={tw`text-xl  font-bold text-center`}>
-        How much will you spend?{" "}
-      </Text>
-      <Text style={tw`text-base m-4  font-semibold text-center`}>
-        Budget for your travel. Chooose all options that apply.
+      <Text style={tw`text-base mt-2 mb-4 font-semibold text-center`}>
+        Choose the budget for your travel.
       </Text>
       <View style={tw`flex flex-row`}>
         <View style={tw`flex`}>

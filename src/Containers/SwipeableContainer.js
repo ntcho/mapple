@@ -27,7 +27,7 @@ export const SwipeableContainer = ({
   // };
 
   return (
-    <View style={tw`w-full h-84 p-4`}>
+    <View style={tw`w-full h-78 p-4`}>
       {places &&
         places.map((place, index) => (
           <TinderCard
@@ -37,7 +37,7 @@ export const SwipeableContainer = ({
               onCardLeftScreen && onCardLeftScreen(place.place_id)
             }
           >
-            <View style={tw`absolute h-52`}>
+            <View style={tw`absolute`}>
               <PlaceCard place={place} />
             </View>
           </TinderCard>
@@ -51,7 +51,7 @@ export const SwipeableContainer = ({
               onCardLeftScreen && onCardLeftScreen(place_id)
             }
           >
-            <View style={tw`absolute h-52`}>
+            <View style={tw`absolute`}>
               <PlaceCard placeId={place_id} />
             </View>
           </TinderCard>

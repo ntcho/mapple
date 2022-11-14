@@ -28,7 +28,8 @@ const HomeContainer = ({ route }) => {
         tabBarIcon: ({ focused, color, size }) => {
           const iconName = {
             Map: ["map-marker-radius", "map-marker-radius-outline"],
-            Me: ["account-circle", "account-circle-outline"],
+            // Find: ["lightning-bolt", "lightning-bolt-outline"],
+            Saved: ["heart", "heart-outline"],
           };
 
           return (
@@ -44,7 +45,8 @@ const HomeContainer = ({ route }) => {
       })}
     >
       <Tab.Screen name="Map" component={MapContainer} />
-      <Tab.Screen name="Me" component={ProfileContainer} />
+      {/* <Tab.Screen name="Find" component={SurveyContainer} /> */}
+      <Tab.Screen name="Saved" component={ProfileContainer} />
     </Tab.Navigator>
   );
 };

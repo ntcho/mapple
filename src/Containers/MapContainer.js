@@ -1,6 +1,7 @@
 import { BlurView } from "expo-blur";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Text, View } from "react-native";
+import { AnimatedFAB } from "react-native-paper";
 import tw from "twrnc";
 import { UserContext } from "../App";
 import MapView from "../Components/MapView";
@@ -15,6 +16,8 @@ export const MapContainer = ({
     priceRange: 1,
     travelMode: "walking",
   },
+  route,
+  navigation,
 }) => {
   const { location, setLocation } = useContext(UserContext);
 
@@ -51,6 +54,13 @@ export const MapContainer = ({
 
     // console.log("params", params);
   }, []);
+
+  useEffect(() => {
+    // update map location to current location
+    setIsCardVisible(true);
+
+    // console.log("params", params);
+  }, [recommendations]);
 
   const updateCurrentLocation = () => {
     getCurrentLocation().then((location) => {
@@ -135,6 +145,8 @@ export const MapContainer = ({
     }, 1000);
   };
 
+  const [isCardVisible, setIsCardVisible] = useState(false);
+
   return (
     <View style={tw`flex flex-col justify-end items-center w-full h-full`}>
       {/* <MapInput notifyChange={(loc) => this.getCoordsFromName(loc)} /> */}
@@ -143,7 +155,18 @@ export const MapContainer = ({
         region={newMapRegion}
         onRegionChange={(newRegion) => onMapRegionChange(newRegion)}
         markers={recommendations}
-        isCardsVisible={true}
+        isCardsVisible={isCardVisible}
+      />
+
+      <AnimatedFAB
+        icon={"lightning-bolt"}
+        label={"Find new match"}
+        extended={true}
+        onPress={() => navigation.navigate("Survey")}
+        visible={true}
+        animateFrom={"right"}
+        iconMode={"static"}
+        style={tw`bottom-78 right-4 absolute rounded-4 bg-orange-600`}
       />
 
       <SwipeableContainer
@@ -168,6 +191,7 @@ export const MapContainer = ({
               latitude: currentLocation.coords.latitude,
               longitude: currentLocation.coords.longitude,
             });
+            setIsCardVisible(false);
           }
         }}
       />

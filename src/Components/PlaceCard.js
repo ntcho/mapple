@@ -61,8 +61,9 @@ const PlaceCard = ({ placeId, place = null }) => {
       <PlaceholderLine width={30} />
     </Placeholder>
   ) : (
-    <Card style={tw`relative min-w-full h-70`}>
+    <Card style={tw`relative min-w-full h-70 rounded-4`} mode="outlined">
       <Card.Cover
+        style={tw`rounded-t-4`}
         source={{
           uri:
             placeDetails.photos == null || placeDetails.photos[0] == null
