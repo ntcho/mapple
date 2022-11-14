@@ -53,6 +53,8 @@ export default function App() {
     setPriceRange,
   };
 
+  clearAll();
+
   return (
     <PaperProvider theme={theme}>
       <SafeAreaProvider>
