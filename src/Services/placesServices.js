@@ -6,7 +6,7 @@ export const getPlaceDetails = async (placeId) => {
 
   try {
     let response = await fetch(
-      `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${Constants.manifest.googleMapsApiKey}`
+      `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${Constants.manifest.extra.googleMapsApiKey}`
     );
     return await response.json();
   } catch (err) {
@@ -30,7 +30,7 @@ export const getNearbyPlaces = async (
       (radius ? `&radius=${radius}` : "&radius=16000") +
       (keyword ? `&keyword=${keyword}` : "") +
       (type ? `&type=${type}` : "") +
-      `&key=${Constants.manifest.googleMapsApiKey}`;
+      `&key=${Constants.manifest.extra.googleMapsApiKey}`;
     console.log(request);
     let response = await fetch(request);
     return await response.json();
@@ -231,7 +231,7 @@ export const getRoutes = async (location, destinationId, mode = "walking") => {
       `?origin=${location.coords.latitude},${location.coords.longitude}` +
       `&destination=place_id:${destinationId}` +
       (mode ? `&mode=${mode}` : "") +
-      `&key=${Constants.manifest.googleMapsApiKey}`;
+      `&key=${Constants.manifest.extra.googleMapsApiKey}`;
     console.log(request);
     let response = await fetch(request);
     return await response.json();

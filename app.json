@@ -1,26 +1,15 @@
 {
-  "googleMapsApiKey": "AIzaSyDkFVLOa9p3e2w3fzn1MfEBJxeUbYcz6hQ",
   "ios": {
     "supportsTablet": true,
-    "bundleIdentifier": "com.example.Mapple",
-    "config": {
-      "googleMapsApiKey": "AIzaSyDkFVLOa9p3e2w3fzn1MfEBJxeUbYcz6hQ"
-    }
+    "bundleIdentifier": "com.ynb.mapple"
   },
   "android": {
     "package": "com.ynb.mapple"
   },
-  "sourceExts": [
-    "expo.ts",
-    "expo.tsx",
-    "expo.js",
-    "expo.jsx",
-    "ts",
-    "tsx",
-    "js",
-    "jsx",
-    "json",
-    "wasm",
-    "svg"
-  ]
+  "extra": {
+    "googleMapsApiKey": null,
+    "eas": {
+      "projectId": "1e9af0c9-73dd-4d3a-96ce-2dd21cd6c4fb"
+    }
+  }
 }

@@ -68,7 +68,7 @@ const PlaceCard = ({ placeId, place = null }) => {
           uri:
             placeDetails.photos == null || placeDetails.photos[0] == null
               ? "https://picsum.photos/1280" // TODO: remove before production, this is a placeholder image
-              : `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1280&photo_reference=${placeDetails.photos[0].photo_reference}&key=${Constants.manifest.googleMapsApiKey}`,
+              : `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1280&photo_reference=${placeDetails.photos[0].photo_reference}&key=${Constants.manifest.extra.googleMapsApiKey}`,
         }}
       />
       <Card.Title
