@@ -24,7 +24,7 @@ const setSavedPlaceIds = async (object) => {
   }
 };
 
-const getSavedPlaceIds = async () => {
+export const getSavedPlaceIds = async () => {
   try {
     const jsonValue = await AsyncStorage.getItem("saved");
     return jsonValue != null ? JSON.parse(jsonValue) : [];
@@ -36,10 +36,12 @@ const getSavedPlaceIds = async () => {
 export const addSavedPlaceIds = async (savedId) => {
   let placeIds = await getSavedPlaceIds();
 
-  console.log("got", placeIds, savedId);
-  placeIds.push(savedId);
+  // console.log("got", placeIds, savedId);
+  if (!placeIds.includes(savedId)) {
+    placeIds.push(savedId);
 
-  setSavedPlaceIds(placeIds);
+    setSavedPlaceIds(placeIds);
+  }
 };
 
 const ProfileContainer = () => {
@@ -51,11 +53,11 @@ const ProfileContainer = () => {
 
   return savedPlaceIds ? (
     <SafeAreaView>
-      <ScrollView style={tw`flex flex-col min-w-full min-h-full`}>
+      <ScrollView style={tw`flex flex-col min-w-full min-h-full px-6 pt-4`}>
         {savedPlaceIds.map((placeId, index) => {
           return (
-            <View style={tw`relative w-full p-6 h-32`}>
-              <PlaceCard placeId={placeId} key={index} />
+            <View style={tw`relative w-full mb-4`} key={index}>
+              <PlaceCard placeId={placeId} />
             </View>
           );
         })}

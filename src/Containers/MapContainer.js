@@ -1,13 +1,13 @@
+import { BlurView } from "expo-blur";
 import { useContext, useEffect, useRef, useState } from "react";
-import { View, Text } from "react-native";
+import { Text, View } from "react-native";
 import tw from "twrnc";
 import { UserContext } from "../App";
 import MapView from "../Components/MapView";
 import { getCurrentLocation } from "../Services/locationServices";
 import { getNearbyRecommendations } from "../Services/placesServices";
-import { SwipeableContainer } from "./SwipeableContainer";
-import { BlurView } from "expo-blur";
 import { addSavedPlaceIds } from "./ProfileContainer";
+import { SwipeableContainer } from "./SwipeableContainer";
 export const MapContainer = ({
   params = {
     activityLevel: 1,
@@ -155,12 +155,19 @@ export const MapContainer = ({
           }
         }}
         onCardLeftScreen={(placeId) => {
-          recommendationsIndex.current += 1;
-          if (recommendationsIndex.current < recommendations.length) {
+          if (recommendationsIndex.current + 1 < recommendations.length) {
             // console.log("NEXT:", recommendations[recommendationsIndex.current]);
             setNewMapRegionWithPlace(
-              recommendations[recommendationsIndex.current]
+              recommendations[recommendationsIndex.current + 1]
             );
+            recommendationsIndex.current += 1;
+          } else {
+            // return to current location
+            setNewMapRegion({
+              ...currentMapRegion,
+              latitude: currentLocation.coords.latitude,
+              longitude: currentLocation.coords.longitude,
+            });
           }
         }}
       />
@@ -173,7 +180,7 @@ export const MapContainer = ({
         >
           <View style={tw`flex w-full h-full justify-center items-center`}>
             <Text style={tw`text-3xl m-4 font-extrabold text-center`}>
-              Saved
+              Saved!
             </Text>
           </View>
         </BlurView>

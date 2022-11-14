@@ -53,7 +53,7 @@ export default function App() {
     setPriceRange,
   };
 
-  clearAll();
+  // clearAll();
 
   return (
     <PaperProvider theme={theme}>

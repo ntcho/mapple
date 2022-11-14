@@ -12,6 +12,7 @@ import tw from "twrnc";
 
 import { View } from "react-native";
 import { UserContext } from "../App";
+import { getSavedPlaceIds } from "../Containers/ProfileContainer";
 import { getPlaceDetails, getRoutes } from "../Services/placesServices";
 
 const PlaceCard = ({ placeId, place = null }) => {
@@ -20,6 +21,8 @@ const PlaceCard = ({ placeId, place = null }) => {
 
   const [placeDetails, setPlaceDetails] = useState(place);
   const [routes, setRoutes] = useState(null);
+
+  const [isSaved, setIsSaved] = useState(false);
 
   // add additional properties:
   // - distance                     -> use euclidian distance lol
@@ -39,6 +42,12 @@ const PlaceCard = ({ placeId, place = null }) => {
     getRoutes(location, place ? place.place_id : placeId, travelMode).then(
       (routes) => setRoutes(routes)
     );
+
+    getSavedPlaceIds().then((placeIds) => {
+      if (placeIds.includes(place ? place.place_id : placeId)) {
+        setIsSaved(true);
+      }
+    });
   }, []);
 
   return placeDetails == null ? (
@@ -52,7 +61,7 @@ const PlaceCard = ({ placeId, place = null }) => {
       <PlaceholderLine width={30} />
     </Placeholder>
   ) : (
-    <Card style={tw`min-w-full min-h-full`}>
+    <Card style={tw`relative min-w-full h-70`}>
       <Card.Cover
         source={{
           uri:
@@ -68,6 +77,12 @@ const PlaceCard = ({ placeId, place = null }) => {
       <Card.Content>
         {routes && routes.routes[0] && (
           <View style={tw`flex flex-row -mt-1`}>
+            {"place_score" in placeDetails && (
+              <Chip
+                text={`${placeDetails.place_score * 2.5}% match`}
+                icon="star"
+              />
+            )}
             <Chip
               text={`${routes.routes[0].legs[0].duration.text} • ${routes.routes[0].legs[0].distance.text}`}
               icon={
@@ -78,22 +93,35 @@ const PlaceCard = ({ placeId, place = null }) => {
                   : "car"
               }
             />
-            <Chip
-              text={`Mapple score ${placeDetails.place_score}`}
-              icon="star"
-            />
           </View>
         )}
       </Card.Content>
+      {isSaved && (
+        <View
+          style={tw`absolute flex flex-row items-center top-0 right-0 m-2 bg-white px-3 py-1 rounded-4`}
+        >
+          <Text style={tw`font-bold`}>Saved</Text>
+          <Avatar.Icon
+            size={18}
+            icon="check"
+            style={tw`ml-2 -mr-1 pl-[0.5px] bg-green-600`}
+          />
+        </View>
+      )}
     </Card>
   );
 };
 
 const Chip = ({ text, icon, iconColor, style }) => {
   return (
-    <View style={tw`flex flex-row mr-2 items-center`}>
-      <Avatar.Icon size={18} icon={icon} color={iconColor} />
-      <Text style={tw`ml-1`}>{text}</Text>
+    <View style={tw`flex flex-row mr-3 items-center`}>
+      <Avatar.Icon
+        size={20}
+        icon={icon}
+        color={iconColor}
+        style={tw`pl-[0.5px] bg-orange-600`}
+      />
+      <Text style={tw`ml-[6px]`}>{text}</Text>
     </View>
   );
 };
