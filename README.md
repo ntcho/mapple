@@ -1,8 +1,8 @@
 # HOW TO RUN THE CODE
-Download all files from github
-Unzip the zip file
-Open the folder with VScode
-Open the terminal
-Type “yarn install” 
-Type “expo start”
-It will appear the QR code, you can download expo to your phone to start it. 
+1).Download all files from github <br />
+2).Unzip the zip file <br />
+3). Open the folder with VScode <br />
+4). Open the terminal <br />
+5). Type “yarn install”  <br />
+6). Type “expo start” <br />
+7). It will appear the QR code, you can download expo to your phone to start it.  <br />
