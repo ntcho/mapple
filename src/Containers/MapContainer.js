@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import tw from "twrnc";
 import MapView from "../Components/MapView";
 import { getCurrentLocation } from "../Services/locationServices";
 import { getNearbyRecommendations } from "../Services/placesServices";
 import { SwipeableContainer } from "./SwipeableContainer";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { BlurView } from "expo-blur";
 
 export const MapContainer = () => {
   // keeps track of current device location
@@ -30,6 +32,8 @@ export const MapContainer = () => {
 
   // keeps track of current visible recommendation place
   const recommendationsIndex = useRef(0);
+
+  const [isBlurVisible, setBlurVisible] = useState(false);
 
   // only run once before render
   useEffect(() => {
@@ -100,6 +104,27 @@ export const MapContainer = () => {
     currentMapRegion.current = newRegion; // update state without re-render
   };
 
+  const showBlur = () => {
+    console.log("showblur");
+    setBlurVisible(true);
+    setTimeout(() => {
+      setBlurVisible(false);
+    }, 1000);
+  };
+
+  const storePlaceId = async (dir, value) => {
+    console.log(dir, value);
+    if (dir == "right") {
+      try {
+        await AsyncStorage.setItem("@storage_Key", value);
+        showBlur();
+      } catch (e) {
+        // saving error
+        console.error(e);
+      }
+    }
+  };
+
   return (
     <View style={tw`flex flex-col justify-end items-center w-full h-full`}>
       {/* <MapInput notifyChange={(loc) => this.getCoordsFromName(loc)} /> */}
@@ -113,6 +138,9 @@ export const MapContainer = () => {
 
       <SwipeableContainer
         places={recommendations}
+        onSwipe={(dir, placeId) => {
+          storePlaceId(dir, placeId);
+        }}
         onCardLeftScreen={(placeId) => {
           recommendationsIndex.current += 1;
           if (recommendationsIndex.current < recommendations.length) {
@@ -123,6 +151,20 @@ export const MapContainer = () => {
           }
         }}
       />
+
+      {isBlurVisible && (
+        <BlurView
+          style={tw`absolute top-0 left-0 w-full h-full`}
+          BlurTint="light"
+          intensity={10}
+        >
+          <View style={tw`flex w-full h-full justify-center items-center`}>
+            <Text style={tw`text-3xl m-4 font-extrabold text-center`}>
+              Saved
+            </Text>
+          </View>
+        </BlurView>
+      )}
     </View>
   );
 };
