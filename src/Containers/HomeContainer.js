@@ -17,11 +17,9 @@ const Demo = () => (
 
 const Tab = createBottomTabNavigator();
 
-const HomeContainer = ({ route, navigation }) => {
-  const { travelMode } = route.params;
-  const { groupSize } = route.params;
-  const { activityLevel } = route.params;
-  const { priceRange } = route.params;
+const HomeContainer = ({ route }) => {
+  const { travelMode, groupSize, activityLevel, priceRange } = route.params;
+
   return (
     <Tab.Navigator
       initialRouteName="Map"
@@ -45,7 +43,9 @@ const HomeContainer = ({ route, navigation }) => {
         tabBarInactiveTintColor: "gray",
       })}
     >
-      <Tab.Screen name="Map" component={MapContainer} />
+      <Tab.Screen name="Map">
+        {() => <MapContainer params={route.params} />}
+      </Tab.Screen>
       <Tab.Screen name="Me" component={Demo} />
     </Tab.Navigator>
   );

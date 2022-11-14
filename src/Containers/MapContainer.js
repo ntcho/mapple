@@ -6,7 +6,14 @@ import { getCurrentLocation } from "../Services/locationServices";
 import { getNearbyRecommendations } from "../Services/placesServices";
 import { SwipeableContainer } from "./SwipeableContainer";
 
-export const MapContainer = () => {
+export const MapContainer = ({
+  params = {
+    activityLevel: 1,
+    groupSize: "alone",
+    priceRange: 1,
+    travelMode: "walking",
+  },
+}) => {
   // keeps track of current device location
   const [currentLocation, setCurrentLocation] = useState({});
 
@@ -35,6 +42,8 @@ export const MapContainer = () => {
   useEffect(() => {
     // update map location to current location
     updateCurrentLocation();
+
+    console.log("params", params);
   }, []);
 
   const updateCurrentLocation = () => {
@@ -53,16 +62,20 @@ export const MapContainer = () => {
       });
 
       // get nearby places recommendations
-      getNearbyRecommendations(location, "walking", "alone", 2, 1).then(
-        (places) => {
-          // console.log("places", JSON.stringify(places, null, 2));
-          nearbyPlaceResults.current = places;
-          setRecommendations(places.slice(0, 20).reverse());
+      getNearbyRecommendations(
+        location,
+        params.travelMode,
+        params.groupSize,
+        params.activityLevel,
+        params.priceRange
+      ).then((places) => {
+        // console.log("places", JSON.stringify(places, null, 2));
+        nearbyPlaceResults.current = places;
+        setRecommendations(places.slice(0, 20).reverse());
 
-          // set center to first place recommendation
-          setNewMapRegionWithPlace(places[0]);
-        }
-      );
+        // set center to first place recommendation
+        setNewMapRegionWithPlace(places[0]);
+      });
     });
   };
 

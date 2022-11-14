@@ -10,7 +10,7 @@ import SurveyContainer from "./Containers/SurveyContainer";
 import { LogBox } from "react-native";
 
 // LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
-LogBox.ignoreAllLogs(); //Ignore all log notifications
+LogBox.ignoreAllLogs(); //Ignore all log notification
 
 const Stack = createNativeStackNavigator();
 
