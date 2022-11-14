@@ -10,6 +10,7 @@ const Demo = () => (
     style={{ flex: 1, justifyContent: "space-between", alignItems: "center" }}
   >
     <Text>This is top text.</Text>
+
     <Text>This is bottom text.</Text>
   </SafeAreaView>
 );
@@ -17,35 +18,6 @@ const Demo = () => (
 const Tab = createBottomTabNavigator();
 
 const HomeContainer = () => {
-  //   const [index, setIndex] = React.useState(0);
-  //   const [routes] = React.useState([
-  //     {
-  //       key: "home",
-  //       title: "Home",
-  //       focusedIcon: "home",
-  //       unfocusedIcon: "home-outline",
-  //     },
-  //     {
-  //       key: "profile",
-  //       title: "Me",
-  //       focusedIcon: "account-circle",
-  //       unfocusedIcon: "account-circle-outline",
-  //     },
-  //   ]);
-
-  //   const renderScene = BottomNavigation.SceneMap({
-  //     home: MapContainer,
-  //     profile: Demo,
-  //   });
-
-  //   return (
-  //     <BottomNavigation
-  //       navigationState={{ index, routes }}
-  //       onIndexChange={setIndex}
-  //       renderScene={renderScene}
-  //     />
-  //   );
-
   return (
     <Tab.Navigator
       initialRouteName="Map"
@@ -76,3 +48,34 @@ const HomeContainer = () => {
 };
 
 export default HomeContainer;
+
+// Below is using react-native-paper but doesn't work =(
+// from: https://callstack.github.io/react-native-paper/bottom-navigation.html
+//   const [index, setIndex] = React.useState(0);
+//   const [routes] = React.useState([
+//     {
+//       key: "home",
+//       title: "Home",
+//       focusedIcon: "home",
+//       unfocusedIcon: "home-outline",
+//     },
+//     {
+//       key: "profile",
+//       title: "Me",
+//       focusedIcon: "account-circle",
+//       unfocusedIcon: "account-circle-outline",
+//     },
+//   ]);
+
+//   const renderScene = BottomNavigation.SceneMap({
+//     home: MapContainer,
+//     profile: Demo,
+//   });
+
+//   return (
+//     <BottomNavigation
+//       navigationState={{ index, routes }}
+//       onIndexChange={setIndex}
+//       renderScene={renderScene}
+//     />
+//   );
