@@ -1,320 +1,221 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
+import React, { useContext } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import tw from "twrnc";
-import { clearAll } from "./ProfileContainer";
+import { UserContext } from "../App";
 
 const Stack = createNativeStackNavigator();
 
-export const Survey1 = ({ navigation }) => {
-  clearAll();
+const images = {
+  activity_high: require("../../assets/images/survey_activity_high.png"),
+  activity_low: require("../../assets/images/survey_activity_low.png"),
+  activity_moderate: require("../../assets/images/survey_activity_moderate.png"),
+  group_alone: require("../../assets/images/survey_group_alone.png"),
+  group_group: require("../../assets/images/survey_group_group.png"),
+  group_partner: require("../../assets/images/survey_group_partner.png"),
+  price_high: require("../../assets/images/survey_price_high.png"),
+  price_low: require("../../assets/images/survey_price_low.png"),
+  price_moderate: require("../../assets/images/survey_price_moderate.png"),
+  travel_driving: require("../../assets/images/survey_travel_driving.png"),
+  travel_subway: require("../../assets/images/survey_travel_subway.png"),
+  travel_walking: require("../../assets/images/survey_travel_walking.png"),
+  unsure: require("../../assets/images/survey_unsure.png"),
+};
 
+const SurveyButton = ({ image, text, onPress }) => (
+  <View style={tw`w-1/2 p-2 h-64`}>
+    <TouchableOpacity
+      style={tw`flex flex-col py-4 w-full h-full bg-white items-center justify-center rounded-4 shadow-sm`}
+      onPress={() => {
+        onPress && onPress();
+      }}
+      activeOpacity={0.7}
+    >
+      <Image
+        style={{
+          flex: 1,
+          width: "100%",
+          resizeMode: "contain",
+        }}
+        source={image}
+      />
+      <Text style={tw`text-xl font-bold text-center`}>{text}</Text>
+    </TouchableOpacity>
+  </View>
+);
+
+const SurveyScreen = ({
+  title,
+  options = [
+    {
+      image: null,
+      text: null,
+      onPress: null,
+    },
+  ],
+  navigation,
+  nextScreen,
+}) => {
   return (
-    <View style={tw`flex items-center justify-center w-full h-full p-8 `}>
-      <Text style={tw`text-2xl font-bold text-center`}>
-        How are you traveling today?
-      </Text>
-      <Text style={tw`text-base mt-2 mb-4 font-semibold text-center`}>
-        Choose your mode of transportation for today.
-      </Text>
-      <View style={tw`flex flex-row`}>
-        <View style={tw`flex`}>
-          <TouchableOpacity
-            style={tw`bg-white m-2 items-center pt-5 rounded-4 shadow-lg`}
-            onPress={() =>
-              navigation.navigate("Survey2", {
-                travelMode: "walking",
-              })
-            }
-            activeOpacity={0.7}
-          >
-            <Image source={require("../../assets/images/walking.png")} />
-            <Text style={tw`text-xl m-4 font-bold`}> By Foot</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={tw`bg-white m-2 items-center pt-5 rounded-4 shadow-lg`}
-            onPress={() =>
-              navigation.navigate("Survey2", {
-                travelMode: "transit",
-              })
-            }
-            activeOpacity={0.7}
-          >
-            <Image source={require("../../assets/images/subway.png")} />
-            <Text style={tw`text-xl m-4 font-bold text-center`}>
-              Public{"\n"}
-              Transporation
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <View style={tw`flex `}>
-          <TouchableOpacity
-            style={tw`bg-white m-2 items-center pt-5 rounded-4 shadow-lg`}
-            onPress={() =>
-              navigation.navigate("Survey2", {
-                travelMode: "driving",
-              })
-            }
-            activeOpacity={0.7}
-          >
-            <Image source={require("../../assets/images/driving.png")} />
-            <Text style={tw`text-xl m-4 font-bold`}> Driving</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={tw`bg-white m-2 items-center pt-8 rounded-4 shadow-lg`}
-            onPress={() =>
-              navigation.navigate("Survey2", {
-                travelMode: null,
-              })
-            }
-            activeOpacity={0.7}
-          >
-            <Image source={require("../../assets/images/unsure.png")} />
-            <Text style={tw`text-xl m-7 font-bold`}> Unsure</Text>
-          </TouchableOpacity>
-        </View>
+    <View style={tw`flex items-center justify-center w-full h-full p-8`}>
+      <Text style={tw`text-2xl font-bold text-center mb-4`}>{title}</Text>
+      <View style={tw`flex flex-col w-full`}>
+        {[
+          [0, 1],
+          [2, 3],
+        ].map((row) => (
+          <View style={tw`flex flex-row w-full`} key={row[0]}>
+            {row.map((index) => (
+              <SurveyButton
+                key={index}
+                text={options[index].text}
+                image={options[index].image}
+                onPress={() => {
+                  options[index].onPress && options[index].onPress();
+                  navigation.navigate(nextScreen);
+                }}
+              />
+            ))}
+          </View>
+        ))}
       </View>
     </View>
   );
 };
 
-export const Survey2 = ({ route, navigation }) => {
-  const { travelMode } = route.params;
+const TravelModeSurvey = ({ navigation }) => {
+  const { setTravelMode } = useContext(UserContext);
 
   return (
-    <View style={tw`flex items-center justify-center w-full h-full p-8 `}>
-      <Text style={tw`text-2xl font-bold text-center`}>
-        Who are you traveling with?
-      </Text>
-      <Text style={tw`text-base mt-2 mb-4 font-semibold text-center`}>
-        Choose the size of the group you are traveling with.
-      </Text>
-      <View style={tw`flex flex-row`}>
-        <View style={tw`flex`}>
-          <TouchableOpacity
-            style={tw`bg-white m-2 items-center pt-5 rounded-4 shadow-lg`}
-            onPress={() =>
-              navigation.navigate("Survey3", {
-                travelMode: travelMode,
-                groupSize: "alone",
-              })
-            }
-            activeOpacity={0.7}
-          >
-            <Image source={require("../../assets/images/alone.png")} />
-            <Text style={tw`text-xl m-4 font-bold`}> Alone</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={tw`bg-white m-2 items-center pt-5 rounded-4 shadow-lg`}
-            onPress={() =>
-              navigation.navigate("Survey3", {
-                travelMode: travelMode,
-                groupSize: "group",
-              })
-            }
-            activeOpacity={0.7}
-          >
-            <Image source={require("../../assets/images/group.png")} />
-            <Text style={tw`text-xl m-7 font-bold text-center`}>
-              As a Group
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <View style={tw`flex `}>
-          <TouchableOpacity
-            style={tw`bg-white m-2 items-center pt-5 rounded-4 shadow-lg`}
-            onPress={() =>
-              navigation.navigate("Survey3", {
-                travelMode: travelMode,
-                groupSize: "partner",
-              })
-            }
-            activeOpacity={0.7}
-          >
-            <Image source={require("../../assets/images/partner.png")} />
-            <Text style={tw`text-xl m-4 font-bold`}> Partner</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={tw`bg-white m-2 items-center pt-8 rounded-4 shadow-lg`}
-            onPress={() =>
-              navigation.navigate("Survey3", {
-                travelMode: travelMode,
-                groupSize: null,
-              })
-            }
-            activeOpacity={0.7}
-          >
-            <Image source={require("../../assets/images/unsure.png")} />
-            <Text style={tw`text-xl m-7 font-bold`}> Unsure</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
+    <SurveyScreen
+      title="How are you traveling today?"
+      options={[
+        {
+          image: images.travel_walking,
+          text: "Walk",
+          onPress: () => setTravelMode("walking"),
+        },
+        {
+          image: images.travel_subway,
+          text: "Transit",
+          onPress: () => setTravelMode("transit"),
+        },
+        {
+          image: images.travel_driving,
+          text: "Drive",
+          onPress: () => setTravelMode("driving"),
+        },
+        {
+          image: images.unsure,
+          text: "Unsure",
+          onPress: () => setTravelMode("walking"),
+        },
+      ]}
+      nextScreen="Survey2"
+      navigation={navigation}
+    />
   );
 };
 
-export const Survey3 = ({ route, navigation }) => {
-  const { travelMode } = route.params;
-  const { groupSize } = route.params;
+const GroupSizeSurvey = ({ navigation }) => {
+  const { setGroupSize } = useContext(UserContext);
 
   return (
-    <View style={tw`flex items-center justify-center w-full h-full p-8 `}>
-      <Text style={tw`text-2xl font-bold text-center`}>
-        How active do you want to be?
-      </Text>
-      <Text style={tw`text-base mt-2 mb-4 font-semibold text-center`}>
-        Choose the level of activity for your travel.
-      </Text>
-      <View style={tw`flex flex-row`}>
-        <View style={tw`flex`}>
-          <TouchableOpacity
-            style={tw`bg-white m-2 items-center pt-5 rounded-4 shadow-lg`}
-            onPress={() =>
-              navigation.navigate("Survey4", {
-                travelMode: travelMode,
-                groupSize: groupSize,
-                activityLevel: 1,
-              })
-            }
-            activeOpacity={0.7}
-          >
-            <Image source={require("../../assets/images/low.png")} />
-            <Text style={tw`text-xl m-4 font-bold`}> Low</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={tw`bg-white m-2 items-center pt-5 rounded-4 shadow-lg`}
-            onPress={() =>
-              navigation.navigate("Survey4", {
-                travelMode: travelMode,
-                groupSize: groupSize,
-                activityLevel: 3,
-              })
-            }
-            activeOpacity={0.7}
-          >
-            <Image source={require("../../assets/images/high.png")} />
-            <Text style={tw`text-xl m-7 font-bold text-center`}>High</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={tw`flex `}>
-          <TouchableOpacity
-            style={tw`bg-white m-2 items-center pt-5 rounded-4 shadow-lg`}
-            onPress={() =>
-              navigation.navigate("Survey4", {
-                travelMode: travelMode,
-                groupSize: groupSize,
-                activityLevel: 2,
-              })
-            }
-            activeOpacity={0.7}
-          >
-            <Image source={require("../../assets/images/Moderate.png")} />
-            <Text style={tw`text-xl m-4 font-bold`}> Moderate</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={tw`bg-white m-2 items-center pt-8 rounded-4 shadow-lg`}
-            onPress={() =>
-              navigation.navigate("Survey4", {
-                travelMode: travelMode,
-                groupSize: groupSize,
-                activityLevel: null,
-              })
-            }
-            activeOpacity={0.7}
-          >
-            <Image source={require("../../assets/images/unsure.png")} />
-            <Text style={tw`text-xl m-7 font-bold`}> Unsure</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
+    <SurveyScreen
+      title="Who are you traveling with?"
+      options={[
+        {
+          image: images.group_alone,
+          text: "By myself",
+          onPress: () => setGroupSize("alone"),
+        },
+        {
+          image: images.group_partner,
+          text: "With partner",
+          onPress: () => setGroupSize("partner"),
+        },
+        {
+          image: images.group_group,
+          text: "With group",
+          onPress: () => setGroupSize("group"),
+        },
+        {
+          image: images.unsure,
+          text: "Unsure",
+          onPress: () => setGroupSize(null),
+        },
+      ]}
+      nextScreen="Survey3"
+      navigation={navigation}
+    />
   );
 };
 
-export const Survey4 = ({ route, navigation }) => {
-  const { travelMode } = route.params;
-  const { groupSize } = route.params;
-  const { activityLevel } = route.params;
+const ActivityLevelSurvey = ({ navigation }) => {
+  const { setActivityLevel } = useContext(UserContext);
 
   return (
-    <View style={tw`flex items-center justify-center w-full h-full p-8 `}>
-      <Text style={tw`text-2xl font-bold text-center`}>
-        How much are you willing to spend?
-      </Text>
-      <Text style={tw`text-base mt-2 mb-4 font-semibold text-center`}>
-        Choose the budget for your travel.
-      </Text>
-      <View style={tw`flex flex-row`}>
-        <View style={tw`flex`}>
-          <TouchableOpacity
-            style={tw`bg-white m-2 items-center pt-5 rounded-4 shadow-lg`}
-            onPress={() =>
-              navigation.navigate("Home", {
-                travelMode: travelMode,
-                groupSize: groupSize,
-                activityLevel: activityLevel,
-                priceRange: 1,
-              })
-            }
-            activeOpacity={0.7}
-          >
-            <Image source={require("../../assets/images/pricelow.png")} />
-            <Text style={tw`text-xl m-4 font-bold`}> $</Text>
-          </TouchableOpacity>
+    <SurveyScreen
+      title={`How active do you\nwant to be?`}
+      options={[
+        {
+          image: images.activity_low,
+          text: "Low",
+          onPress: () => setActivityLevel(1),
+        },
+        {
+          image: images.activity_moderate,
+          text: "Moderate",
+          onPress: () => setActivityLevel(2),
+        },
+        {
+          image: images.activity_high,
+          text: "High",
+          onPress: () => setActivityLevel(3),
+        },
+        {
+          image: images.unsure,
+          text: "Unsure",
+          onPress: () => setActivityLevel(null),
+        },
+      ]}
+      nextScreen="Survey4"
+      navigation={navigation}
+    />
+  );
+};
 
-          <TouchableOpacity
-            style={tw`bg-white m-2 items-center pt-5 rounded-4 shadow-lg`}
-            onPress={() =>
-              navigation.navigate("Home", {
-                travelMode: travelMode,
-                groupSize: groupSize,
-                activityLevel: activityLevel,
-                priceRange: 3,
-              })
-            }
-            activeOpacity={0.7}
-          >
-            <Image source={require("../../assets/images/pricehigh.png")} />
-            <Text style={tw`text-xl m-7 font-bold text-center`}>$$$</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={tw`flex `}>
-          <TouchableOpacity
-            style={tw`bg-white m-2 items-center pt-5 rounded-4 shadow-lg`}
-            onPress={() =>
-              navigation.navigate("Home", {
-                travelMode: travelMode,
-                groupSize: groupSize,
-                activityLevel: activityLevel,
-                priceRange: 2,
-              })
-            }
-            activeOpacity={0.7}
-          >
-            <Image source={require("../../assets/images/pricemoderate.png")} />
-            <Text style={tw`text-xl m-4 font-bold`}> $$</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={tw`bg-white m-2 items-center pt-8 rounded-4 shadow-lg`}
-            onPress={() =>
-              navigation.navigate("Home", {
-                travelMode: travelMode,
-                groupSize: groupSize,
-                activityLevel: activityLevel,
-                priceRange: null,
-              })
-            }
-            activeOpacity={0.7}
-          >
-            <Image source={require("../../assets/images/unsure.png")} />
-            <Text style={tw`text-xl m-7 font-bold`}> Unsure</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
+const PriceRangeSurvey = ({ navigation }) => {
+  const { setPriceRange } = useContext(UserContext);
+
+  return (
+    <SurveyScreen
+      title={`How much are you\nwilling to spend?`}
+      options={[
+        {
+          image: images.price_low,
+          text: "Low",
+          onPress: () => setPriceRange(1),
+        },
+        {
+          image: images.price_moderate,
+          text: "Moderate",
+          onPress: () => setPriceRange(2),
+        },
+        {
+          image: images.price_high,
+          text: "High",
+          onPress: () => setPriceRange(3),
+        },
+        {
+          image: images.unsure,
+          text: "Unsure",
+          onPress: () => setPriceRange(null),
+        },
+      ]}
+      nextScreen="Home"
+      navigation={navigation}
+    />
   );
 };
 
@@ -326,11 +227,10 @@ export const SurveyContainer = () => {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="Survey1" component={Survey1} />
-      <Stack.Screen name="Survey2" component={Survey2} />
-      <Stack.Screen name="Survey3" component={Survey3} />
-      <Stack.Screen name="Survey4" component={Survey4} />
-      {/* <Stack.Screen name="Home" component={HomeContainer} /> */}
+      <Stack.Screen name="Survey1" component={TravelModeSurvey} />
+      <Stack.Screen name="Survey2" component={GroupSizeSurvey} />
+      <Stack.Screen name="Survey3" component={ActivityLevelSurvey} />
+      <Stack.Screen name="Survey4" component={PriceRangeSurvey} />
     </Stack.Navigator>
   );
 };
