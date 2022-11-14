@@ -3,7 +3,7 @@ import { View } from "react-native";
 import tw from "twrnc";
 import MapView from "../Components/MapView";
 import { getCurrentLocation } from "../Services/locationServices";
-import { getNearbyPlaces } from "../Services/placesServices";
+import { getNearbyRecommendations } from "../Services/placesServices";
 import { SwipeableContainer } from "./SwipeableContainer";
 
 export const MapContainer = () => {
@@ -49,12 +49,15 @@ export const MapContainer = () => {
       });
 
       // get nearby places recommendations
-      getNearbyPlaces(location).then((places) => {
-        nearbyPlaceResults.current = places.results;
-        setRecommendations(places.results);
-        // set center to first place recommendation
-        setNewMapRegionWithPlace(places.results[0]);
-      });
+      getNearbyRecommendations(location, "walking", "alone", 2, 1).then(
+        (places) => {
+          console.log(JSON.stringify(places));
+          nearbyPlaceResults.current = places.results;
+          setRecommendations(places.results);
+          // set center to first place recommendation
+          setNewMapRegionWithPlace(places.results[0]);
+        }
+      );
     });
   };
 
