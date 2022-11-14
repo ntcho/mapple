@@ -1,11 +1,9 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React, { useContext, useEffect } from "react";
-import { Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { UserContext } from "../App";
-import MapContainer from "./MapContainer";
 import ProfileContainer from "../Containers/ProfileContainer";
+import MapContainer from "./MapContainer";
 
 const Tab = createBottomTabNavigator();
 
@@ -14,10 +12,12 @@ const HomeContainer = ({ route }) => {
     useContext(UserContext);
 
   useEffect(() => {
-    setTravelMode(route.params.travelMode);
-    setGroupSize(route.params.groupSize);
-    setActivityLevel(route.params.activityLevel);
-    setPriceRange(route.params.priceRange);
+    try {
+      setTravelMode(route.params.travelMode);
+      setGroupSize(route.params.groupSize);
+      setActivityLevel(route.params.activityLevel);
+      setPriceRange(route.params.priceRange);
+    } catch (e) {}
   });
 
   return (

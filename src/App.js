@@ -61,7 +61,7 @@ export default function App() {
         <UserContext.Provider value={value}>
           <NavigationContainer>
             <Stack.Navigator
-              initialRouteName="Survey"
+              initialRouteName="Me"
               screenOptions={{ headerShown: false }}
             >
               <Stack.Screen name="Home" component={HomeContainer} />

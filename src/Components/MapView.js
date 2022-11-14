@@ -69,7 +69,7 @@ const MyMapView = ({
       {markers &&
         markers.map((place, index) => (
           <Marker
-            key={place.place_id}
+            key={index}
             coordinate={{
               latitude: place.geometry.location.lat,
               longitude: place.geometry.location.lng,

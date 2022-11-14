@@ -1,13 +1,9 @@
-import React from "react";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Text, ScrollView, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import PlaceCard from "../Components/PlaceCard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useState } from "react";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { ScrollView, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import tw from "twrnc";
+import PlaceCard from "../Components/PlaceCard";
 
 export const clearAll = async () => {
   try {
@@ -58,7 +54,7 @@ const ProfileContainer = () => {
       <ScrollView style={tw`flex flex-col min-w-full min-h-full`}>
         {savedPlaceIds.map((placeId, index) => {
           return (
-            <View style={tw`w-full h-68`}>
+            <View style={tw`relative w-full p-6 h-32`}>
               <PlaceCard placeId={placeId} key={index} />
             </View>
           );

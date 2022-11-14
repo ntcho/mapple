@@ -66,14 +66,16 @@ const PlaceCard = ({ placeId, place = null }) => {
         // subtitle={placeDetails.place_score}
       />
       <Card.Content>
-        {routes && (
+        {routes && routes.routes[0] && (
           <View style={tw`flex flex-row -mt-1`}>
             <Chip
               text={`${routes.routes[0].legs[0].duration.text} • ${routes.routes[0].legs[0].distance.text}`}
               icon={
-                { walking: "walk", transit: "train", driving: "car" }[
-                  travelMode
-                ]
+                travelMode
+                  ? { walking: "walk", transit: "train", driving: "car" }[
+                      travelMode
+                    ]
+                  : "car"
               }
             />
             <Chip
