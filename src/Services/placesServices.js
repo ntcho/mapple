@@ -53,6 +53,8 @@ export const getNearbyRecommendations = async (
 
   // 1. find top 5 types
   let groupSizeScores = groupSizeScoreArray.map(([type, scores]) => {
+    if (groupSize == null) return [type, 5]; // return defeult value
+
     return [
       type,
       [0, 3, 7, 10][scores[{ alone: 0, partner: 1, group: 2 }[groupSize]]],
@@ -61,8 +63,11 @@ export const getNearbyRecommendations = async (
 
   let typeScores = activityLevelScoreArray
     .map(([type, score], index) => {
-      let activityLevelScore = (2 - Math.abs(score - activityLevel)) * 5; // higher the difference, lower the score
       let groupSizeScore = groupSizeScores[index][1];
+
+      if (activityLevel == null) return [type, 5 + groupSizeScore]; // return defeult value
+
+      let activityLevelScore = (2 - Math.abs(score - activityLevel)) * 5; // higher the difference, lower the score
 
       // console.log(
       //   "getNearbyRecommendations::typeScores",
@@ -99,7 +104,9 @@ export const getNearbyRecommendations = async (
 
         // console.log("distance:", distance);
 
-        if (distance < 1600) {
+        if (travelMode == null) {
+          travelModeScore = 5;
+        } else if (distance < 1600) {
           travelModeScore = 10;
         } else if (distance < 1600 * 5) {
           travelModeScore = { walking: 5, transit: 10, driving: 10 }[
@@ -112,7 +119,7 @@ export const getNearbyRecommendations = async (
         // 2.2. score with price range
         let priceRangeScore = 0;
 
-        if ("price_level" in place == false) {
+        if (priceRange == null || "price_level" in place == false) {
           priceRangeScore = 5; // price data not available
         } else if (place.price_level <= 1) {
           // price_level is 0 ~ 1
@@ -215,6 +222,22 @@ const activityLevelScore = {
   shopping_mall: 2,
   supermarket: 2,
   zoo: 2,
+};
+
+export const getRoutes = async (location, destinationId, mode = "walking") => {
+  try {
+    let request =
+      `https://maps.googleapis.com/maps/api/directions/json` +
+      `?origin=${location.coords.latitude},${location.coords.longitude}` +
+      `&destination=place_id:${destinationId}` +
+      (mode ? `&mode=${mode}` : "") +
+      `&key=${Constants.manifest.googleMapsApiKey}`;
+    console.log(request);
+    let response = await fetch(request);
+    return await response.json();
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 const mockPlaceDetail = {

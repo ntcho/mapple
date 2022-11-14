@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import Constants from "expo-constants";
-import { Card, Paragraph } from "react-native-paper";
+import { Avatar, Card, Text } from "react-native-paper";
 import {
   Fade,
   Placeholder,
@@ -10,10 +10,22 @@ import {
 } from "rn-placeholder";
 import tw from "twrnc";
 
-import { getPlaceDetails } from "../Services/placesServices";
+import { View } from "react-native";
+import { UserContext } from "../App";
+import { getPlaceDetails, getRoutes } from "../Services/placesServices";
 
 const PlaceCard = ({ placeId, place = null }) => {
+  const { location, travelMode, groupSize, activityLevel, priceRange } =
+    useContext(UserContext);
+
   const [placeDetails, setPlaceDetails] = useState(place);
+  const [routes, setRoutes] = useState(null);
+
+  // add additional properties:
+  // - distance                     -> use euclidian distance lol
+  // - transportation methods       -> use google maps route api
+  // - recommended group sizes      -> use custom classification data
+  // - price range                  -> use google maps places api
 
   // retrieve place id
   useEffect(() => {
@@ -23,6 +35,10 @@ const PlaceCard = ({ placeId, place = null }) => {
         // console.log("place", place);
       });
     }
+
+    getRoutes(location, place ? place.place_id : placeId, travelMode).then(
+      (routes) => setRoutes(routes)
+    );
   }, []);
 
   return placeDetails == null ? (
@@ -47,12 +63,36 @@ const PlaceCard = ({ placeId, place = null }) => {
       />
       <Card.Title
         title={placeDetails.name}
-        subtitle={placeDetails.place_score}
+        // subtitle={placeDetails.place_score}
       />
       <Card.Content>
-        <Paragraph>Card content</Paragraph>
+        {routes && (
+          <View style={tw`flex flex-row -mt-1`}>
+            <Chip
+              text={`${routes.routes[0].legs[0].duration.text} • ${routes.routes[0].legs[0].distance.text}`}
+              icon={
+                { walking: "walk", transit: "train", driving: "car" }[
+                  travelMode
+                ]
+              }
+            />
+            <Chip
+              text={`Mapple score ${placeDetails.place_score}`}
+              icon="star"
+            />
+          </View>
+        )}
       </Card.Content>
     </Card>
+  );
+};
+
+const Chip = ({ text, icon, iconColor, style }) => {
+  return (
+    <View style={tw`flex flex-row mr-2 items-center`}>
+      <Avatar.Icon size={18} icon={icon} color={iconColor} />
+      <Text style={tw`ml-1`}>{text}</Text>
+    </View>
   );
 };
 

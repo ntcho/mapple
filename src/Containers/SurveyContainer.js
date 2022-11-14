@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
-import { View, Image, Text, TouchableOpacity } from "react-native";
-import tw from "twrnc";
-import HomeContainer from "./HomeContainer";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from "react";
+import { Image, Text, TouchableOpacity, View } from "react-native";
+import tw from "twrnc";
 
 const Stack = createNativeStackNavigator();
 
@@ -267,7 +266,7 @@ export const Survey4 = ({ route, navigation }) => {
                 travelMode: travelMode,
                 groupSize: groupSize,
                 activityLevel: activityLevel,
-                prizeRange: 1,
+                priceRange: 1,
               })
             }
             activeOpacity={0.7}
@@ -341,7 +340,7 @@ export const SurveyContainer = () => {
       <Stack.Screen name="Survey2" component={Survey2} />
       <Stack.Screen name="Survey3" component={Survey3} />
       <Stack.Screen name="Survey4" component={Survey4} />
-      <Stack.Screen name="Home" component={HomeContainer} />
+      {/* <Stack.Screen name="Home" component={HomeContainer} /> */}
     </Stack.Navigator>
   );
 };
