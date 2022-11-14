@@ -17,7 +17,11 @@ const Demo = () => (
 
 const Tab = createBottomTabNavigator();
 
-const HomeContainer = () => {
+const HomeContainer = ({ route, navigation }) => {
+  const { travelMode } = route.params;
+  const { groupSize } = route.params;
+  const { activityLevel } = route.params;
+  const { priceRange } = route.params;
   return (
     <Tab.Navigator
       initialRouteName="Map"
