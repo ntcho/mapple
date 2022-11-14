@@ -5,6 +5,7 @@ import * as React from "react";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import HomeContainer from "./Containers/HomeContainer";
+import SurveyContainer from "./Containers/SurveyContainer";
 
 import { LogBox } from "react-native";
 
@@ -24,10 +25,11 @@ export default function App() {
       <SafeAreaProvider>
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="Home"
+            initialRouteName="Survey"
             screenOptions={{ headerShown: false }}
           >
             <Stack.Screen name="Home" component={HomeContainer} />
+            <Stack.Screen name="Survey" component={SurveyContainer} />
             {/* <Stack.Screen name="Settings" component={} /> */}
           </Stack.Navigator>
           <StatusBar style="dark" />
