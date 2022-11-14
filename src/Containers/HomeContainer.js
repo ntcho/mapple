@@ -4,24 +4,11 @@ import React from "react";
 import { Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MapContainer from "./MapContainer";
-
-const Demo = () => (
-  <SafeAreaView
-    style={{ flex: 1, justifyContent: "space-between", alignItems: "center" }}
-  >
-    <Text>This is top text.</Text>
-
-    <Text>This is bottom text.</Text>
-  </SafeAreaView>
-);
+import ProfileContainer from "../Containers/ProfileContainer";
 
 const Tab = createBottomTabNavigator();
 
 const HomeContainer = ({ route, navigation }) => {
-  const { travelMode } = route.params;
-  const { groupSize } = route.params;
-  const { activityLevel } = route.params;
-  const { priceRange } = route.params;
   return (
     <Tab.Navigator
       initialRouteName="Map"
@@ -46,7 +33,7 @@ const HomeContainer = ({ route, navigation }) => {
       })}
     >
       <Tab.Screen name="Map" component={MapContainer} />
-      <Tab.Screen name="Me" component={Demo} />
+      <Tab.Screen name="Me" component={ProfileContainer} />
     </Tab.Navigator>
   );
 };

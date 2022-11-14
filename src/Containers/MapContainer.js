@@ -5,9 +5,8 @@ import MapView from "../Components/MapView";
 import { getCurrentLocation } from "../Services/locationServices";
 import { getNearbyRecommendations } from "../Services/placesServices";
 import { SwipeableContainer } from "./SwipeableContainer";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BlurView } from "expo-blur";
-
+import { addSavedPlaceIds } from "./ProfileContainer";
 export const MapContainer = () => {
   // keeps track of current device location
   const [currentLocation, setCurrentLocation] = useState({});
@@ -112,19 +111,6 @@ export const MapContainer = () => {
     }, 1000);
   };
 
-  const storePlaceId = async (dir, value) => {
-    console.log(dir, value);
-    if (dir == "right") {
-      try {
-        await AsyncStorage.setItem("@storage_Key", value);
-        showBlur();
-      } catch (e) {
-        // saving error
-        console.error(e);
-      }
-    }
-  };
-
   return (
     <View style={tw`flex flex-col justify-end items-center w-full h-full`}>
       {/* <MapInput notifyChange={(loc) => this.getCoordsFromName(loc)} /> */}
@@ -139,7 +125,10 @@ export const MapContainer = () => {
       <SwipeableContainer
         places={recommendations}
         onSwipe={(dir, placeId) => {
-          storePlaceId(dir, placeId);
+          if (dir == "right") {
+            showBlur();
+            addSavedPlaceIds(placeId);
+          }
         }}
         onCardLeftScreen={(placeId) => {
           recommendationsIndex.current += 1;

@@ -12,24 +12,20 @@ import tw from "twrnc";
 
 import { getPlaceDetails } from "../Services/placesServices";
 
-const PlaceCard = ({ placeId, place }) => {
-  const [isLoading, setLoading] = useState(true);
-  const [placeDetails, setPlaceDetails] = useState();
+const PlaceCard = ({ placeId, place = null }) => {
+  const [placeDetails, setPlaceDetails] = useState(place);
 
   // retrieve place id
   useEffect(() => {
-    if (place == null) {
+    if (placeDetails == null) {
       getPlaceDetails(placeId).then((place) => {
-        setPlaceDetails(place.results);
-        setLoading(false);
+        setPlaceDetails(place.result);
+        // console.log("place", place);
       });
-    } else {
-      setPlaceDetails(place);
-      setLoading(false);
     }
   }, []);
 
-  return isLoading ? (
+  return placeDetails == null ? (
     <Placeholder
       Animation={Fade}
       Left={PlaceholderMedia}

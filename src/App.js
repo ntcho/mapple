@@ -8,6 +8,7 @@ import HomeContainer from "./Containers/HomeContainer";
 import SurveyContainer from "./Containers/SurveyContainer";
 
 import { LogBox } from "react-native";
+import { clearAll } from "./Containers/ProfileContainer";
 
 // LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
@@ -20,6 +21,8 @@ const theme = {
 };
 
 export default function App() {
+  // clearAll();
+
   return (
     <PaperProvider theme={theme}>
       <SafeAreaProvider>
@@ -28,8 +31,8 @@ export default function App() {
             initialRouteName="Survey"
             screenOptions={{ headerShown: false }}
           >
-            <Stack.Screen name="Home" component={HomeContainer} />
             <Stack.Screen name="Survey" component={SurveyContainer} />
+            {/* <Stack.Screen name="Home" component={HomeContainer} /> */}
             {/* <Stack.Screen name="Settings" component={} /> */}
           </Stack.Navigator>
           <StatusBar style="dark" />

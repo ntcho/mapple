@@ -2,7 +2,7 @@ import Constants from "expo-constants";
 
 export const getPlaceDetails = async (placeId) => {
   // TODO: remove on production
-  return mockPlaceDetail;
+  // return mockPlaceDetail;
 
   try {
     let response = await fetch(
