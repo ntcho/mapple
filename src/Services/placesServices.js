@@ -224,6 +224,22 @@ const activityLevelScore = {
   zoo: 2,
 };
 
+export const getRoutes = async (location, destinationId, mode = "walking") => {
+  try {
+    let request =
+      `https://maps.googleapis.com/maps/api/directions/json` +
+      `?origin=${location.coords.latitude},${location.coords.longitude}` +
+      `&destination=place_id:${destinationId}` +
+      (mode ? `&mode=${mode}` : "") +
+      `&key=${Constants.manifest.googleMapsApiKey}`;
+    console.log(request);
+    let response = await fetch(request);
+    return await response.json();
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 const mockPlaceDetail = {
   html_attributions: [],
   result: {

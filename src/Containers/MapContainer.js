@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 import tw from "twrnc";
+import { UserContext } from "../App";
 import MapView from "../Components/MapView";
 import { getCurrentLocation } from "../Services/locationServices";
 import { getNearbyRecommendations } from "../Services/placesServices";
@@ -14,6 +15,8 @@ export const MapContainer = ({
     travelMode: "walking",
   },
 }) => {
+  const { location, setLocation } = useContext(UserContext);
+
   // keeps track of current device location
   const [currentLocation, setCurrentLocation] = useState({});
 
@@ -52,6 +55,7 @@ export const MapContainer = ({
 
       // update currentLocation for future reference
       setCurrentLocation(location);
+      setLocation(location);
 
       // center map to current location
       setNewMapRegion({
@@ -69,13 +73,20 @@ export const MapContainer = ({
         params.activityLevel,
         params.priceRange
       ).then((places) => {
-        // console.log("places", JSON.stringify(places, null, 2));
+        // console.log("places", JSON.stringify(places[0], null, 2));
         nearbyPlaceResults.current = places;
         setRecommendations(places.slice(0, 20).reverse());
 
         // set center to first place recommendation
         setNewMapRegionWithPlace(places[0]);
       });
+
+      // getRoutes(location, "ChIJp9xNigML3YkRarTSePZ7v2k", "driving").then(
+      //   (route) => {
+      //     console.log(JSON.stringify(route.routes[0].legs[0].duration.text));
+      //     // console.log(JSON.stringify(route, null, 2));
+      //   }
+      // );
     });
   };
 

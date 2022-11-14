@@ -1,8 +1,9 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { UserContext } from "../App";
 import MapContainer from "./MapContainer";
 
 const Demo = () => (
@@ -18,7 +19,15 @@ const Demo = () => (
 const Tab = createBottomTabNavigator();
 
 const HomeContainer = ({ route }) => {
-  const { travelMode, groupSize, activityLevel, priceRange } = route.params;
+  const { setTravelMode, setGroupSize, setActivityLevel, setPriceRange } =
+    useContext(UserContext);
+
+  useEffect(() => {
+    setTravelMode(route.params.travelMode);
+    setGroupSize(route.params.groupSize);
+    setActivityLevel(route.params.activityLevel);
+    setPriceRange(route.params.priceRange);
+  });
 
   return (
     <Tab.Navigator
@@ -43,9 +52,7 @@ const HomeContainer = ({ route }) => {
         tabBarInactiveTintColor: "gray",
       })}
     >
-      <Tab.Screen name="Map">
-        {() => <MapContainer params={route.params} />}
-      </Tab.Screen>
+      <Tab.Screen name="Map" component={MapContainer} />
       <Tab.Screen name="Me" component={Demo} />
     </Tab.Navigator>
   );
