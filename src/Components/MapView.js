@@ -33,11 +33,13 @@ const MyMapView = ({
         // points are too far, skip animation
         map.current.setCamera({
           center: newCenter,
+          zoom: 14,
         });
       } else {
         // close enough, animate to new coords
         map.current.animateCamera({
           center: newCenter,
+          zoom: 14,
         });
       }
     });
@@ -65,7 +67,7 @@ const MyMapView = ({
       // followsUserLocation={true}
     >
       {markers &&
-        markers.slice(0, 9).map((place, index) => (
+        markers.map((place, index) => (
           <Marker
             key={place.place_id}
             coordinate={{

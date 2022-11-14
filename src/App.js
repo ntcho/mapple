@@ -6,6 +6,11 @@ import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import HomeContainer from "./Containers/HomeContainer";
 
+import { LogBox } from "react-native";
+
+// LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
+LogBox.ignoreAllLogs(); //Ignore all log notifications
+
 const Stack = createNativeStackNavigator();
 
 const theme = {

@@ -21,13 +21,13 @@ export const getNearbyPlaces = async (
   type = null // available types: https://developers.google.com/maps/documentation/places/web-service/supported_types
 ) => {
   // TODO: remove on production
-  return mockNearbyPlaces;
+  // return mockNearbyPlaces;
 
   try {
     let request =
       `https://maps.googleapis.com/maps/api/place/nearbysearch/json` +
       `?location=${location.coords.latitude}%2C${location.coords.longitude}` +
-      `&radius=${radius}` +
+      (radius ? `&radius=${radius}` : "&radius=16000") +
       (keyword ? `&keyword=${keyword}` : "") +
       (type ? `&type=${type}` : "") +
       `&key=${Constants.manifest.googleMapsApiKey}`;
@@ -46,73 +46,93 @@ export const getNearbyRecommendations = async (
   activityLevel,
   priceRange
 ) => {
-  // let radius = { walking: 1600, transit: 8050, driving: 16000 }[travelMode];
-
-  let places = await getNearbyPlaces(currentLocation);
+  console.log("getNearbyRecommendations");
 
   const groupSizeScoreArray = Object.entries(groupSizeScore);
   const activityLevelScoreArray = Object.entries(activityLevelScore);
 
   // 1. find top 5 types
   let groupSizeScores = groupSizeScoreArray.map(([type, scores]) => {
-    if (travelMode == "alone") return [type, [10, 0, 0][scores[0]]]; // will be ["group", score]
-    if (travelMode == "transit") return [type, [5, 10, 5][scores[1]]];
-    if (travelMode == "group") return [type, [0, 5, 10][scores[2]]];
+    return [
+      type,
+      [0, 3, 7, 10][scores[{ alone: 0, partner: 1, group: 2 }[groupSize]]],
+    ]; // will be ["group", score]
   });
 
   let typeScores = activityLevelScoreArray
-    .map(([type, score]) => {
-      let activityLevelScore = 2 - Math.abs(score - activityLevel) * 5; // higher the difference, lower the score
-      let groupSizeScore =
-        groupSizeScores[groupSizeScores.findIndex(([t, s]) => t === type)][1];
+    .map(([type, score], index) => {
+      let activityLevelScore = (2 - Math.abs(score - activityLevel)) * 5; // higher the difference, lower the score
+      let groupSizeScore = groupSizeScores[index][1];
+
+      // console.log(
+      //   "getNearbyRecommendations::typeScores",
+      //   type,
+      //   activityLevelScore,
+      //   groupSizeScore
+      // );
 
       return [type, activityLevelScore + groupSizeScore];
     })
     .sort((a, b) => b[1] > a[1]); // sorted by scores
 
-  let topTypes = typeScores.slice(0, 4);
+  let topTypes = typeScores.slice(0, 10);
+
+  // console.log("getNearbyRecommendations::topTypes", topTypes);
 
   // 2. search places for each types and aggregate the results into 1 array
-  let placeResults = topTypes
-    .map(async ([type, score]) => {
-      let place = await getNearbyPlaces(currentLocation, null, null, type);
+  let placeResults = await Promise.all(
+    topTypes.map(async ([type, score]) => {
+      let places = await getNearbyPlaces(currentLocation, null, null, type);
 
       return places.results.map((place) => {
         // 2.1. score with travel mode
-        let travelModeScore = () => {
-          let deltaLng =
-            place.geometry.location.lng - currentLocation.coordinate.longitude;
-          let deltaLat =
-            place.geometry.location.lat - currentLocation.coordinate.latitude;
+        let travelModeScore = 0;
 
-          // distance in meters
-          let distance =
-            Math.sqrt(deltaLat * deltaLat + deltaLng * deltaLng) * 111139;
+        let deltaLng =
+          place.geometry.location.lng - currentLocation.coords.longitude;
+        let deltaLat =
+          place.geometry.location.lat - currentLocation.coords.latitude;
 
-          if (distance < 1600) {
-            return 10;
-          } else if (distance < 1600 * 5) {
-            return { walking: 5, transit: 10, driving: 10 }[travelMode];
-          } else if (1600 * 5 < distance) {
-            return { walking: 0, transit: 5, driving: 10 }[travelMode];
-          }
-        };
+        // distance in meters
+        let distance =
+          Math.sqrt(deltaLat * deltaLat + deltaLng * deltaLng) * 111139;
+
+        // console.log("distance:", distance);
+
+        if (distance < 1600) {
+          travelModeScore = 10;
+        } else if (distance < 1600 * 5) {
+          travelModeScore = { walking: 5, transit: 10, driving: 10 }[
+            travelMode
+          ];
+        } else if (1600 * 5 < distance) {
+          travelModeScore = { walking: 0, transit: 5, driving: 10 }[travelMode];
+        }
 
         // 2.2. score with price range
-        let priceRangeScore = () => {
-          if ("price_level" in place == false) {
-            return 5; // price data not available
-          } else if (place.price_level <= 1) {
-            // price_level is 0 ~ 1
-            return { 1: 10, 2: 10, 3: 10 }[priceRange];
-          } else if (place.price_level <= 2) {
-            // price_level is 2
-            return { 1: 5, 2: 10, 3: 10 }[priceRange];
-          } else if (place.price_level <= 4) {
-            // price_level is 3 ~ 4
-            return { 1: 0, 2: 5, 3: 10 }[priceRange];
-          }
-        };
+        let priceRangeScore = 0;
+
+        if ("price_level" in place == false) {
+          priceRangeScore = 5; // price data not available
+        } else if (place.price_level <= 1) {
+          // price_level is 0 ~ 1
+          priceRangeScore = { 1: 10, 2: 10, 3: 10 }[priceRange];
+        } else if (place.price_level <= 2) {
+          // price_level is 2
+          priceRangeScore = { 1: 5, 2: 10, 3: 10 }[priceRange];
+        } else if (place.price_level <= 4) {
+          // price_level is 3 ~ 4
+          priceRangeScore = { 1: 0, 2: 5, 3: 10 }[priceRange];
+        }
+
+        // console.log(
+        //   "PLACE:",
+        //   place.name,
+        //   type,
+        //   score,
+        //   travelModeScore,
+        //   priceRangeScore
+        // );
 
         return {
           ...place,
@@ -121,10 +141,18 @@ export const getNearbyRecommendations = async (
         };
       });
     })
-    .sort((a, b) => b.place_score > a.place_score);
+  );
+
+  // console.log("", JSON.stringify(...placeResults, null, 2));
 
   // 3. score and sort the results
-  return placeResults;
+  let result = [];
+
+  placeResults.forEach((element) => {
+    result = result.concat(element);
+  });
+
+  return result.sort((a, b) => b.place_score > a.place_score);
 };
 
 const groupSizeScore = {
@@ -139,7 +167,7 @@ const groupSizeScore = {
   campground: [0, 1, 3],
   casino: [3, 1, 0],
   cemetery: [1, 1, 1],
-  church: [2, 2, 2],
+  church: [1, 1, 1],
   convenience_store: [2, 2, 1],
   department_store: [2, 2, 1],
   drugstore: [1, 1, 1],
@@ -170,7 +198,7 @@ const activityLevelScore = {
   campground: 3,
   casino: 2,
   cemetery: 1,
-  church: 2,
+  church: 1,
   convenience_store: 1,
   department_store: 1,
   drugstore: 1,

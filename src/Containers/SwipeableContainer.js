@@ -29,7 +29,7 @@ export const SwipeableContainer = ({
   return (
     <View style={tw`w-full h-84 p-4`}>
       {places &&
-        places.slice(0, 9).map((place) => (
+        places.map((place) => (
           <TinderCard
             key={place.place_id}
             onSwipe={(dir) => onSwipe && onSwipe(dir, place.place_id)}
@@ -38,7 +38,7 @@ export const SwipeableContainer = ({
             }
           >
             <View style={tw`absolute h-52`}>
-              <PlaceCard placeId={place.place_id} />
+              <PlaceCard place={place} />
             </View>
           </TinderCard>
         ))}

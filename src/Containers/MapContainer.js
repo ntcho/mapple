@@ -28,6 +28,9 @@ export const MapContainer = () => {
   // keeps track of recommendations shown as markers and cards
   const [recommendations, setRecommendations] = useState([]);
 
+  // keeps track of current visible recommendation place
+  const recommendationsIndex = useRef(0);
+
   // only run once before render
   useEffect(() => {
     // update map location to current location
@@ -36,14 +39,15 @@ export const MapContainer = () => {
 
   const updateCurrentLocation = () => {
     getCurrentLocation().then((location) => {
-      // console.log(location);
+      console.log("getCurrentLocation", location);
 
       // update currentLocation for future reference
       setCurrentLocation(location);
 
       // center map to current location
       setNewMapRegion({
-        ...currentMapRegion.current,
+        latitudeDelta: 0.0922, // width of visible region
+        longitudeDelta: 0.0421, // height of visible region
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       });
@@ -51,11 +55,12 @@ export const MapContainer = () => {
       // get nearby places recommendations
       getNearbyRecommendations(location, "walking", "alone", 2, 1).then(
         (places) => {
-          console.log(JSON.stringify(places));
-          nearbyPlaceResults.current = places.results;
-          setRecommendations(places.results);
+          // console.log("places", JSON.stringify(places, null, 2));
+          nearbyPlaceResults.current = places;
+          setRecommendations(places.slice(0, 20).reverse());
+
           // set center to first place recommendation
-          setNewMapRegionWithPlace(places.results[0]);
+          setNewMapRegionWithPlace(places[0]);
         }
       );
     });
@@ -75,12 +80,12 @@ export const MapContainer = () => {
   };
 
   // only runs when nearbyPlaces are updated, process recommendations into places
-  useEffect(
-    (places) => {
-      setRecommendations(places);
-    },
-    [nearbyPlaceResults]
-  );
+  // useEffect(
+  //   (places) => {
+  //     setRecommendations(places);
+  //   },
+  //   [nearbyPlaceResults]
+  // );
 
   const getCoordsFromName = (coords) => {
     // center map to new coords
@@ -109,13 +114,12 @@ export const MapContainer = () => {
       <SwipeableContainer
         places={recommendations}
         onCardLeftScreen={(placeId) => {
-          try {
-            let dismissedPlaceIndex =
-              recommendations &&
-              recommendations.findIndex((place) => place.place_id === placeId);
-            setNewMapRegionWithPlace(recommendations[dismissedPlaceIndex + 1]);
-          } catch (e) {
-            console.error(e);
+          recommendationsIndex.current += 1;
+          if (recommendationsIndex.current < recommendations.length) {
+            // console.log("NEXT:", recommendations[recommendationsIndex.current]);
+            setNewMapRegionWithPlace(
+              recommendations[recommendationsIndex.current]
+            );
           }
         }}
       />

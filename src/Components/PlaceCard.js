@@ -12,16 +12,21 @@ import tw from "twrnc";
 
 import { getPlaceDetails } from "../Services/placesServices";
 
-const PlaceCard = ({ placeId }) => {
+const PlaceCard = ({ placeId, place }) => {
   const [isLoading, setLoading] = useState(true);
   const [placeDetails, setPlaceDetails] = useState();
 
   // retrieve place id
   useEffect(() => {
-    getPlaceDetails(placeId).then((place) => {
+    if (place == null) {
+      getPlaceDetails(placeId).then((place) => {
+        setPlaceDetails(place.results);
+        setLoading(false);
+      });
+    } else {
       setPlaceDetails(place);
       setLoading(false);
-    });
+    }
   }, []);
 
   return isLoading ? (
@@ -39,15 +44,14 @@ const PlaceCard = ({ placeId }) => {
       <Card.Cover
         source={{
           uri:
-            placeDetails.result.photos == null ||
-            placeDetails.result.photos[0] == null
+            placeDetails.photos == null || placeDetails.photos[0] == null
               ? "https://picsum.photos/1280" // TODO: remove before production, this is a placeholder image
-              : `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1280&photo_reference=${placeDetails.result.photos[0].photo_reference}&key=${Constants.manifest.googleMapsApiKey}`,
+              : `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1280&photo_reference=${placeDetails.photos[0].photo_reference}&key=${Constants.manifest.googleMapsApiKey}`,
         }}
       />
       <Card.Title
-        title={placeDetails.result.name}
-        subtitle={placeDetails.result.formatted_address}
+        title={placeDetails.name}
+        subtitle={placeDetails.place_score}
       />
       <Card.Content>
         <Paragraph>Card content</Paragraph>
