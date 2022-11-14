@@ -43,7 +43,7 @@ export const MapContainer = ({
     // update map location to current location
     updateCurrentLocation();
 
-    console.log("params", params);
+    // console.log("params", params);
   }, []);
 
   const updateCurrentLocation = () => {
