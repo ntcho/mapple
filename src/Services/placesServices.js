@@ -31,7 +31,7 @@ export const getNearbyPlaces = async (
       (keyword ? `&keyword=${keyword}` : "") +
       (type ? `&type=${type}` : "") +
       `&key=${Constants.manifest.extra.googleMapsApiKey}`;
-    console.log(request);
+    // console.log(request);
     let response = await fetch(request);
     return await response.json();
   } catch (err) {
@@ -41,12 +41,16 @@ export const getNearbyPlaces = async (
 
 export const getNearbyRecommendations = async (
   currentLocation,
-  travelMode,
-  groupSize,
-  activityLevel,
-  priceRange
+  { travelMode, groupSize, activityLevel, priceRange }
 ) => {
-  console.log("getNearbyRecommendations");
+  console.log(
+    "getNearbyRecommendations:",
+    currentLocation,
+    travelMode,
+    groupSize,
+    activityLevel,
+    priceRange
+  );
 
   const groupSizeScoreArray = Object.entries(groupSizeScore);
   const activityLevelScoreArray = Object.entries(activityLevelScore);
@@ -232,7 +236,7 @@ export const getRoutes = async (location, destinationId, mode = "walking") => {
       `&destination=place_id:${destinationId}` +
       (mode ? `&mode=${mode}` : "") +
       `&key=${Constants.manifest.extra.googleMapsApiKey}`;
-    console.log(request);
+    // console.log(request);
     let response = await fetch(request);
     return await response.json();
   } catch (err) {
@@ -438,7 +442,7 @@ const mockPlaceDetail = {
         rating: 1,
         relative_time_description: "a week ago",
         text: "Called regarding paid advertising google pages to the top of its site of a scam furniture website misleading and taking peoples money without ever sending a product - explained the situation,  explained I'd spoken to an ombudsman regarding it.  Listed ticket numbers etc.\n\nThey left the advertisement running.",
-        time: 1652286798,
+        time: 1452286798,
       },
       {
         author_name: "Tevita Taufoou",
@@ -450,7 +454,7 @@ const mockPlaceDetail = {
         rating: 1,
         relative_time_description: "6 months ago",
         text: "I need help.  Google Australia is taking my money. Money I don't have any I am having trouble sorting this issue out",
-        time: 1637215605,
+        time: 1437215605,
       },
       {
         author_name: "Jordy Baker",
@@ -462,7 +466,7 @@ const mockPlaceDetail = {
         rating: 1,
         relative_time_description: "4 months ago",
         text: "I have literally never been here in my life, I am 17 and they are taking money I don't have for no reason.\n\nThis is not ok. I have rent to pay and my own expenses to deal with and now this.",
-        time: 1641389490,
+        time: 1441389490,
       },
       {
         author_name: "Prem Rathod",
@@ -474,7 +478,7 @@ const mockPlaceDetail = {
         rating: 1,
         relative_time_description: "4 months ago",
         text: "Terrible service. all reviews are fake and irrelevant. This is about reviewing google as business not the building/staff etc.",
-        time: 1640159655,
+        time: 1440159655,
       },
       {
         author_name: "Husuni Hamza",
@@ -486,7 +490,7 @@ const mockPlaceDetail = {
         rating: 5,
         relative_time_description: "7 months ago",
         text: "Nice site. Please I want to work with you. Am Alhassan Haruna, from Ghana. Contact me +233553851616",
-        time: 1633197305,
+        time: 1433197305,
       },
     ],
     types: ["point_of_interest", "establishment"],
@@ -672,7 +676,7 @@ const mockNearbyPlaces = {
           ],
           photo_reference:
             "AW30NDxWD6i0B55Y_npfHvBGGgRQMFyiSLqupio5HikBur0_X-zyfe31CfzflVu-1e8SX5GLb9a__xJrpcjPDwBNstQGQE7GpX9LGYGMnRPyEgyKAG0GwIQ8dS3iIaDUv8kSdIkiG28v1u9a2Je5lArbCeFfKAuoS6H4rfHwMiG1VlB5rDsz",
-          width: 1600,
+          width: 1400,
         },
       ],
       place_id: "ChIJJbqitG0K3YkRIcwTnKYM8hU",

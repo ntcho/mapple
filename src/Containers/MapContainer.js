@@ -1,40 +1,35 @@
-import { BlurView } from "expo-blur";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Text, View } from "react-native";
 import { AnimatedFAB } from "react-native-paper";
 import tw from "twrnc";
-import { UserContext } from "../App";
-import MapView from "../Components/MapView";
-import { getCurrentLocation } from "../Services/locationServices";
-import { getNearbyRecommendations } from "../Services/placesServices";
-import { addSavedPlaceIds } from "./ProfileContainer";
-import { SwipeableContainer } from "./SwipeableContainer";
-export const MapContainer = ({
-  params = {
-    activityLevel: 1,
-    groupSize: "alone",
-    priceRange: 1,
-    travelMode: "walking",
-  },
-  route,
-  navigation,
-}) => {
-  const { location, setLocation } = useContext(UserContext);
 
+import { useFocusEffect } from "@react-navigation/native";
+import { BlurView } from "expo-blur";
+import MapView from "../Components/MapView";
+import { getCurrentLocation, getZoomLevel } from "../Services/locationServices";
+import { getNearbyRecommendations } from "../Services/placesServices";
+import {
+  addSavedPlaceIds,
+  getSurveyResults,
+} from "../Services/storageServices";
+import { SwipeableContainer } from "./SwipeableContainer";
+
+export const MapContainer = ({ route, navigation }) => {
   // keeps track of current device location
   const [currentLocation, setCurrentLocation] = useState({});
 
   // keeps track of region currently being displayed on the map
   // * only updated by the `onMapRegionChange` callback
-  const currentMapRegion = useRef({
+  const currentMapCamera = useRef({
     latitude: 40.74843500584747,
     longitude: -73.98566235185115, // Empire State Building Coordinates
     latitudeDelta: 0.0922, // width of visible region
     longitudeDelta: 0.0421, // height of visible region
+    zoom: 14,
   });
 
   // used to move the map to a new location
-  const [newMapRegion, setNewMapRegion] = useState(currentMapRegion.current);
+  const [mapCamera, setMapCamera] = useState(currentMapCamera.current);
 
   // keeps track of nearby place search result in Google Maps API `results` format
   const nearbyPlaceResults = useRef([]);
@@ -43,98 +38,93 @@ export const MapContainer = ({
   const [recommendations, setRecommendations] = useState([]);
 
   // keeps track of current visible recommendation place
-  const recommendationsIndex = useRef(0);
+  const recommendationsIndex = useRef(null);
+
+  // survey results for recommendations
+  const [surveyResults, setSurveyResults] = useState(null);
 
   const [isBlurVisible, setBlurVisible] = useState(false);
 
-  // only run once before render
+  // get survey results on focus
+  useFocusEffect(
+    useCallback(() => {
+      getSurveyResults().then((r) => {
+        setSurveyResults(r);
+        console.log("useFocusEffect::results", r);
+      });
+    }, [])
+  );
+
+  // only run when surveyResults is updated
   useEffect(() => {
-    // update map location to current location
-    updateCurrentLocation();
-
-    // console.log("params", params);
-  }, []);
-
-  useEffect(() => {
-    // update map location to current location
-    setIsCardVisible(true);
-
-    // console.log("params", params);
-  }, [recommendations]);
+    // only run when surveyResults is loaded
+    if (surveyResults != null) {
+      // update map location to current location
+      updateCurrentLocation();
+    }
+  }, [surveyResults]);
 
   const updateCurrentLocation = () => {
     getCurrentLocation().then((location) => {
-      console.log("getCurrentLocation", location);
+      // console.log("getCurrentLocation", location);
 
       // update currentLocation for future reference
       setCurrentLocation(location);
-      setLocation(location);
 
       // center map to current location
-      setNewMapRegion({
-        latitudeDelta: 0.0922, // width of visible region
-        longitudeDelta: 0.0421, // height of visible region
+      setMapCamera({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
+        zoom: 14,
       });
 
       // get nearby places recommendations
-      getNearbyRecommendations(
-        location,
-        params.travelMode,
-        params.groupSize,
-        params.activityLevel,
-        params.priceRange
-      ).then((places) => {
+      getNearbyRecommendations(location, surveyResults).then((places) => {
+        const LENGTH = 20;
+
         // console.log("places", JSON.stringify(places[0], null, 2));
+
         nearbyPlaceResults.current = places;
-        setRecommendations(places.slice(0, 20).reverse());
+        recommendationsIndex.current = LENGTH - 1;
+
+        setRecommendations(places.slice(0, LENGTH).reverse());
 
         // set center to first place recommendation
-        setNewMapRegionWithPlace(places[0]);
-      });
+        console.log("newCenter firstSet");
+        setMapCameraWithPlace(places[0]);
 
-      // getRoutes(location, "ChIJp9xNigML3YkRarTSePZ7v2k", "driving").then(
-      //   (route) => {
-      //     console.log(JSON.stringify(route.routes[0].legs[0].duration.text));
-      //     // console.log(JSON.stringify(route, null, 2));
-      //   }
-      // );
+        setIsCardVisible(true);
+      });
     });
   };
 
-  const setNewMapRegionWithPlace = (place) => {
+  const setMapCameraWithPlace = (place) => {
     try {
-      let nextLocation = place.geometry.location;
-      setNewMapRegion({
-        ...currentMapRegion.current,
-        latitude: nextLocation.lat,
-        longitude: nextLocation.lng,
+      console.log(
+        "newCenter =\t",
+        place.geometry.location.lat,
+        "\t\t",
+        place.geometry.location.lng,
+        "\t",
+        getZoomLevel(surveyResults.travelMode),
+        place.name
+      );
+      setMapCamera({
+        zoom: getZoomLevel(surveyResults.travelMode),
+        latitude: place.geometry.location.lat,
+        longitude: place.geometry.location.lng,
       });
     } catch (error) {
       console.error(error);
     }
   };
 
-  // only runs when nearbyPlaces are updated, process recommendations into places
-  // useEffect(
-  //   (places) => {
-  //     setRecommendations(places);
-  //   },
-  //   [nearbyPlaceResults]
-  // );
-
-  const getCoordsFromName = (coords) => {
-    // center map to new coords
-    setNewMapRegion({
-      ...currentMapRegion.current,
-      latitude: coords.latitude,
-      longitude: coords.longitude,
-    });
-  };
-
   const onMapRegionChange = (newRegion) => {
-    currentMapRegion.current = newRegion; // update state without re-render
+    currentMapCamera.current = {
+      ...currentMapCamera,
+      latitude: newRegion.latitude,
+      longitude: newRegion.longitude,
+    }; // update state without re-render
   };
 
   const showBlur = () => {
@@ -145,6 +135,7 @@ export const MapContainer = ({
     }, 1000);
   };
 
+  // TODO: make FAB responsive
   const [isCardVisible, setIsCardVisible] = useState(false);
 
   return (
@@ -152,7 +143,7 @@ export const MapContainer = ({
       {/* <MapInput notifyChange={(loc) => this.getCoordsFromName(loc)} /> */}
 
       <MapView
-        region={newMapRegion}
+        camera={mapCamera}
         onRegionChange={(newRegion) => onMapRegionChange(newRegion)}
         markers={recommendations}
         isCardsVisible={isCardVisible}
@@ -170,7 +161,7 @@ export const MapContainer = ({
       />
 
       <SwipeableContainer
-        places={recommendations}
+        places={recommendations} // TODO: fix not being re-drawn with update
         onSwipe={(dir, placeId) => {
           if (dir == "right") {
             showBlur();
@@ -178,16 +169,18 @@ export const MapContainer = ({
           }
         }}
         onCardLeftScreen={(placeId) => {
-          if (recommendationsIndex.current + 1 < recommendations.length) {
-            // console.log("NEXT:", recommendations[recommendationsIndex.current]);
-            setNewMapRegionWithPlace(
-              recommendations[recommendationsIndex.current + 1]
+          if (recommendationsIndex.current > 0) {
+            // move camera to next recommended place
+            console.log("newCenter swipeSet");
+            setMapCameraWithPlace(
+              recommendations[recommendationsIndex.current - 1]
             );
-            recommendationsIndex.current += 1;
+
+            recommendationsIndex.current = recommendationsIndex.current - 1;
           } else {
             // return to current location
-            setNewMapRegion({
-              ...currentMapRegion,
+            setMapCamera({
+              ...currentMapCamera.current,
               latitude: currentLocation.coords.latitude,
               longitude: currentLocation.coords.longitude,
             });

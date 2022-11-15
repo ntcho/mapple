@@ -1,25 +1,12 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useContext, useEffect } from "react";
-import { UserContext } from "../App";
+import React from "react";
 import ProfileContainer from "../Containers/ProfileContainer";
 import MapContainer from "./MapContainer";
 
 const Tab = createBottomTabNavigator();
 
-const HomeContainer = ({ route }) => {
-  const { setTravelMode, setGroupSize, setActivityLevel, setPriceRange } =
-    useContext(UserContext);
-
-  useEffect(() => {
-    try {
-      setTravelMode(route.params.travelMode);
-      setGroupSize(route.params.groupSize);
-      setActivityLevel(route.params.activityLevel);
-      setPriceRange(route.params.priceRange);
-    } catch (e) {}
-  });
-
+const HomeContainer = () => {
   return (
     <Tab.Navigator
       initialRouteName="Map"
@@ -45,7 +32,6 @@ const HomeContainer = ({ route }) => {
       })}
     >
       <Tab.Screen name="Map" component={MapContainer} />
-      {/* <Tab.Screen name="Find" component={SurveyContainer} /> */}
       <Tab.Screen name="Saved" component={ProfileContainer} />
     </Tab.Navigator>
   );

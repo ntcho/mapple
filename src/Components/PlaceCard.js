@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Constants from "expo-constants";
 import { Avatar, Card, Text } from "react-native-paper";
@@ -11,16 +11,17 @@ import {
 import tw from "twrnc";
 
 import { View } from "react-native";
-import { UserContext } from "../App";
-import { getSavedPlaceIds } from "../Containers/ProfileContainer";
+import { getCurrentLocation } from "../Services/locationServices";
 import { getPlaceDetails, getRoutes } from "../Services/placesServices";
+import {
+  getSavedPlaceIds,
+  getSurveyResults,
+} from "../Services/storageServices";
 
 const PlaceCard = ({ placeId, place = null }) => {
-  const { location, travelMode, groupSize, activityLevel, priceRange } =
-    useContext(UserContext);
-
   const [placeDetails, setPlaceDetails] = useState(place);
   const [routes, setRoutes] = useState(null);
+  const [surveyResults, setSurveyResults] = useState(null);
 
   const [isSaved, setIsSaved] = useState(false);
 
@@ -32,6 +33,7 @@ const PlaceCard = ({ placeId, place = null }) => {
 
   // retrieve place id
   useEffect(() => {
+    // get placeDetails if not available
     if (placeDetails == null) {
       getPlaceDetails(placeId).then((place) => {
         setPlaceDetails(place.result);
@@ -39,10 +41,21 @@ const PlaceCard = ({ placeId, place = null }) => {
       });
     }
 
-    getRoutes(location, place ? place.place_id : placeId, travelMode).then(
-      (routes) => setRoutes(routes)
-    );
+    // get surveyResults
+    getSurveyResults().then((r) => {
+      setSurveyResults(r);
 
+      // get route details
+      getCurrentLocation().then((location) =>
+        getRoutes(
+          location,
+          place ? place.place_id : placeId,
+          r.travelMode
+        ).then((routes) => setRoutes(routes))
+      );
+    });
+
+    // check whether it is saved
     getSavedPlaceIds().then((placeIds) => {
       if (placeIds.includes(place ? place.place_id : placeId)) {
         setIsSaved(true);
@@ -76,7 +89,7 @@ const PlaceCard = ({ placeId, place = null }) => {
         // subtitle={placeDetails.place_score}
       />
       <Card.Content>
-        {routes && routes.routes[0] && (
+        {surveyResults && routes && routes.routes[0] && (
           <View style={tw`flex flex-row -mt-1`}>
             {"place_score" in placeDetails && (
               <Chip
@@ -87,11 +100,11 @@ const PlaceCard = ({ placeId, place = null }) => {
             <Chip
               text={`${routes.routes[0].legs[0].duration.text} • ${routes.routes[0].legs[0].distance.text}`}
               icon={
-                travelMode
+                surveyResults.travelMode
                   ? { walking: "walk", transit: "train", driving: "car" }[
-                      travelMode
+                      surveyResults.travelMode
                     ]
-                  : "car"
+                  : "alert"
               }
             />
           </View>
@@ -336,7 +349,7 @@ export default PlaceCard;
 //             "rating": 1,
 //             "relative_time_description": "a week ago",
 //             "text": "Called regarding paid advertising google pages to the top of its site of a scam furniture website misleading and taking peoples money without ever sending a product - explained the situation,  explained I'd spoken to an ombudsman regarding it.  Listed ticket numbers etc.\n\nThey left the advertisement running.",
-//             "time": 1652286798,
+//             "time": 1452286798,
 //           },
 //           {
 //             "author_name": "Tevita Taufoou",
@@ -346,7 +359,7 @@ export default PlaceCard;
 //             "rating": 1,
 //             "relative_time_description": "6 months ago",
 //             "text": "I need help.  Google Australia is taking my money. Money I don't have any I am having trouble sorting this issue out",
-//             "time": 1637215605,
+//             "time": 1437215605,
 //           },
 //           {
 //             "author_name": "Jordy Baker",
@@ -356,7 +369,7 @@ export default PlaceCard;
 //             "rating": 1,
 //             "relative_time_description": "4 months ago",
 //             "text": "I have literally never been here in my life, I am 17 and they are taking money I don't have for no reason.\n\nThis is not ok. I have rent to pay and my own expenses to deal with and now this.",
-//             "time": 1641389490,
+//             "time": 1441389490,
 //           },
 //           {
 //             "author_name": "Prem Rathod",
@@ -366,7 +379,7 @@ export default PlaceCard;
 //             "rating": 1,
 //             "relative_time_description": "4 months ago",
 //             "text": "Terrible service. all reviews are fake and irrelevant. This is about reviewing google as business not the building/staff etc.",
-//             "time": 1640159655,
+//             "time": 1440159655,
 //           },
 //           {
 //             "author_name": "Husuni Hamza",
@@ -376,7 +389,7 @@ export default PlaceCard;
 //             "rating": 5,
 //             "relative_time_description": "7 months ago",
 //             "text": "Nice site. Please I want to work with you. Am Alhassan Haruna, from Ghana. Contact me +233553851616",
-//             "time": 1633197305,
+//             "time": 1433197305,
 //           },
 //         ],
 //       "types": ["point_of_interest", "establishment"],
